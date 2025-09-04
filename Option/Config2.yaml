@@ -1,0 +1,56 @@
+# 建图阶段通用LLM配置
+llm:
+  api_type: "openai" # or open_llm
+  base_url: 'https://api.lkeap.cloud.tencent.com/v1'
+  model: "deepseek-v3-0324"
+  api_key: "sk"
+
+  # api_type: "open_llm" # 使用本地vllm
+  # base_url: "http://localhost:8002/v1"
+  # model: "qwen3-4b"
+  # max_token: 6144
+  # MAX_MODEL_LEN: 32768
+  # temperature: 0.6
+
+
+# 检索专用LLM配置 
+retrieval_llm:  
+  api_type: "openai" # 使用ollama本地部署的qwen3:32b
+  base_url: 'http://localhost:11434/v1'
+  model: "qwen3:32b"
+  api_key: "ollama"
+
+  # api_type: "open_llm" # 使用本地vllm
+  # base_url: "http://localhost:8002/v1"
+  # model: "qwen3-4b"
+  # max_token: 6144
+  # MAX_MODEL_LEN: 32768
+  # temperature: 0.6
+
+
+# 评估专用LLM配置
+eval_llm:
+  api_type: "openai" # 使用ollama本地部署的qwen3:32b
+  base_url: 'http://localhost:11434/v1'
+  model: "qwen3:32b"
+  api_key: "ollama"
+
+
+embedding:
+  api_type: "hf"  # or  ollama / openai.
+  # base_url: "https://cfcus02.opapi.win/v1"  # or forward url / other llm url
+  api_key: "YOUR_API_KEY"
+  model: "../cache/models/modelscope/hub/models/AI-ModelScope/all-MiniLM-L6-v2"
+  cache_dir: ""
+  dimensions: 384
+  max_token_size: 8192
+  embed_batch_size: 128
+  embedding_func_max_async: 16
+  device: "cuda:0"  # 使用CPU: "cpu" 或使用GPU: "cuda:0"
+  # target_devices: ["cpu"]  # 可选：明确指定目标设备列表
+ 
+ 
+data_root:  "./Data" # Root directory for data
+working_dir: ./ # Result directory for the experiment
+exp_name: "rag_experiments"  # Experiment name
+# 

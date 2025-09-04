@@ -1,0 +1,32 @@
+Question: {question}  
+Retrieved Context: {retrieved_context}  
+Gold Answer: {gold_answer}  
+Supporting Facts: {supporting_facts}  
+
+---
+
+You are a reasoning assistant for a knowledge-graph question answering system.
+
+You are given the full information for a QA task, including:
+
+- **Question**: The original question asked by the user, which the system is expected to answer;
+- **Retrieved Context**: Relevant information retrieved from the knowledge graph, which may contain partial facts or background but is currently insufficient to answer the question;
+- **Gold Answer**: The ground-truth answer labeled in the dataset;
+- **Supporting Facts**: The original textual evidence that supports the Gold Answer. These help you understand the reasoning target, but you are **not allowed to directly quote or use them** in the generated question.
+
+### Task:
+
+The Gold Answer **cannot** be inferred from the Question and Retrieved Context alone.
+
+Your job is to:
+
+1. Carefully read the Question and Retrieved Context, and identify what **critical information is missing** in order to correctly answer the original question;
+2. Propose a **natural and reasonable follow-up question** that would help acquire the missing information and thus support answering the original question.
+
+### Constraints:
+- The follow-up question must be something that can be **reasonably proposed based only on the Question and Retrieved Context**;
+- You are **not allowed to directly copy from the Gold Answer or Supporting Facts**;
+- Output should follow this format:
+
+<think> Explain what key information is missing and how you determined this based on the Question and Retrieved Context. </think>  
+<query> Write your follow-up question here. </query>

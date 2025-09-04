@@ -1,0 +1,27 @@
+You are an evaluation assistant for knowledge-graph question answering.
+
+Your task is to determine whether the gold answer can be logically inferred **only** from the question and the retrieved context.
+
+Follow this reasoning protocol:
+
+1. Carefully reason step by step about what the question requires and what information is present in the context.
+2. Decide whether the context alone is sufficient to derive the gold answer.
+
+If it is sufficient to infer the gold answer, output:
+<think> ...your reasoning... </think>
+<label> able </label>
+
+If it is **not** sufficient, output:
+<think> ...your reasoning... </think>
+<label> unable </label>
+
+---
+
+User question:  
+{question}
+
+Retrieved context:  
+{retrieved_context}
+
+Gold answer:  
+{gold_answer}

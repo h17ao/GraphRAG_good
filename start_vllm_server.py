@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""
+基于vLLM的本地LLM服务启动脚本 - RTX 4090双卡分布式推理（GPU 0&1，24GB*2显存，张量并行版）
+"""
+
+import subprocess
+import sys
+import os
+
+# 模型配置
+MODEL_PATH = "../cache/models/modelscope/hub/models/qwen/Qwen3-32B"
+# MODEL_PATH = "../GraphRAG-RL-verl/tmp_epoch3"  # 第3个epoch训练好的模型路径
+HOST = "0.0.0.0"
+PORT = 8002
+
+# ========== RTX 4090双卡分布式配置（张量并行）==========
+GPU_MEMORY_UTILIZATION = 0.70  # 4090 24GB显存利用率 (70%，适应其他进程占用)
+MAX_MODEL_LEN = 26000  # 4090显存限制，适中序列长度
+MAX_NUM_SEQS = 4     # 4090并发数（适中配置）
+MAX_NUM_BATCHED_TOKENS = 128  # 4090批处理大小（保守配置）
+ENABLE_CHUNKED_PREFILL = True   # 分块预填充（减少峰值显存）
+ENABLE_PREFIX_CACHING = False   # 暂时关闭前缀缓存（减少显存占用）
+BLOCK_SIZE = 8                  # 4090优化：更小的块大小减少显存压力
+# 注意：不使用量化参数，避免影响实验结果精度
+
+# 设置使用的GPU设备 (使用两张4090: GPU 2, 3)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+
+# 自动检测多卡
+cuda_visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+if cuda_visible_devices:
+    device_list = [d for d in cuda_visible_devices.split(",") if d.strip() != ""]
+    tensor_parallel_size = len(device_list)
+else:
+    tensor_parallel_size = 1
+
+print("============================================")
+print("🔥 GraphRAG vLLM本地服务启动器（RTX 4090双卡张量并行版）")
+print("============================================")
+print(f"[GPU检测] CUDA_VISIBLE_DEVICES = {cuda_visible_devices}")
+print(f"[GPU检测] tensor_parallel_size = {tensor_parallel_size}")
+
+# 检查模型是否存在
+if not os.path.exists(MODEL_PATH):
+    print(f"❌ 模型路径不存在: {MODEL_PATH}")
+    sys.exit(1)
+
+# 检查vLLM
+try:
+    import vllm
+    print("✅ vLLM已安装")
+except ImportError:
+    print("❌ vLLM未安装，请先安装vLLM！")
+    sys.exit(1)
+
+# 构建vLLM命令（全面性能优化，不影响精度）
+cmd = [
+    "python", "-m", "vllm.entrypoints.openai.api_server",
+    "--model", MODEL_PATH,
+    "--host", HOST,
+    "--port", str(PORT),
+    "--gpu-memory-utilization", str(GPU_MEMORY_UTILIZATION),
+    "--max-model-len", str(MAX_MODEL_LEN),
+    "--max-num-seqs", str(MAX_NUM_SEQS),
+    "--max-num-batched-tokens", str(MAX_NUM_BATCHED_TOKENS),
+    "--trust-remote-code",
+    "--served-model-name", "qwen3-4b-graphrag-rl-epoch3",
+    "--block-size", str(BLOCK_SIZE),         # 显存块大小优化
+    "--disable-custom-all-reduce",           # 单卡优化
+    "--max-seq-len-to-capture", str(MAX_MODEL_LEN),  # 序列捕获优化
+]
+
+# 添加显存优化选项
+if ENABLE_CHUNKED_PREFILL:
+    cmd.append("--enable-chunked-prefill")
+if ENABLE_PREFIX_CACHING:
+    cmd.append("--enable-prefix-caching")
+if tensor_parallel_size > 1:
+    cmd += ["--tensor-parallel-size", str(tensor_parallel_size)]
+    print(f"[多卡模式] 启用 --tensor-parallel-size {tensor_parallel_size}")
+    print(f"[RTX 4090三卡] GPU 2,3,4 张量并行 (24GB*3=72GB总显存，75%利用率)")
+else:
+    print("[单卡模式] 使用RTX 4090 GPU (24GB显存，90%利用率)")
+
+print("\n🎯 RTX 4090四卡张量并行配置 (显存优化版):")
+print(f"  - 📏 序列长度: {MAX_MODEL_LEN} (降低以适应KV cache限制)")
+print(f"  - 🚀 最大并发数: {MAX_NUM_SEQS} (降低以节省显存)")
+print(f"  - 📦 批处理容量: {MAX_NUM_BATCHED_TOKENS} tokens (保守配置)")
+print(f"  - 📊 块大小: {BLOCK_SIZE} (更小块大小减少显存压力)")
+print(f"  - 💾 显存利用率: {GPU_MEMORY_UTILIZATION*100}% (提高以获得更多KV cache)")
+print("  - 📐 张量并行: 启用 (四卡分布式)")
+print("  - 📋 请求日志: 启用 (便于调试监控)")
+print("  - 🧩 分块预填充: 启用")
+print("  - 🗄️ 前缀缓存: 关闭 (减少显存占用)")
+print("  - ✅ 预期配置: qwen3-32B在96GB总显存上运行")
+
+print("\n🔥 正在启动vLLM服务...")
+print(f"执行命令: {' '.join(cmd)}")
+
+try:
+    subprocess.run(cmd, check=True)
+except subprocess.CalledProcessError as e:
+    print(f"❌ vLLM服务启动失败: {e}")
+    sys.exit(1)
+except KeyboardInterrupt:
+    print("\n🛑 服务已停止") 

@@ -1,0 +1,117 @@
+Data/hotpotqa/
+Data/hotpotqa_all/
+Data/2wiki
+Data/musique
+Data/graphrag-bench
+sft_data/
+2wiki/
+musique/
+hotpotqa/
+hotpotqa_all/
+RL_data_generate/label_generate/*.json
+RL_data_generate/query_generate/*.json
+Clustering nodes
+
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 分发/打包
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# 单元测试/覆盖率报告
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# 环境变量
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+# .vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 数据文件和结果
+*.pkl
+*.pickle
+
+# 模型文件
+*.bin
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+
+# 日志文件
+*.log
+logs/
+Logs/
+
+
+# 向量索引文件
+*.index
+*.faiss
+
+# 向量数据库
+*.db
+*.sqlite
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 大文件
+*.pdf
+*.zip
+*.tar.gz
+
+# SFT训练数据大文件
+RL_data_generate/sft_generate/*.json
+RL_data_generate/sft_generate/*.jsonl
