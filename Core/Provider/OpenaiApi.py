@@ -16,6 +16,7 @@ from tenacity import (
     retry_if_exception_type,
     stop_after_attempt,
     wait_random_exponential,
+    wait_fixed,
 )
 
 from Config.LLMConfig import LLMConfig, LLMType
@@ -102,8 +103,7 @@ class OpenAILLM(BaseLLM):
         return params
 
     @retry(
-        stop=stop_after_attempt(30),  # 重试30次
-        wait=wait_random_exponential(min=1, max=500),  # 等待时间：最小1秒，最大300秒，指数退避
+        wait=wait_fixed(3),  # 固定等待3秒，无限重试
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -179,8 +179,7 @@ class OpenAILLM(BaseLLM):
 
 
     @retry(
-        stop=stop_after_attempt(30),  # 重试30次
-        wait=wait_random_exponential(min=1, max=500),  # 等待时间：最小1秒，最大300秒，指数退避
+        wait=wait_fixed(3),  # 固定等待3秒，无限重试
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -200,8 +199,7 @@ class OpenAILLM(BaseLLM):
         return rsp
 
     @retry(
-        stop=stop_after_attempt(30),  # 重试30次
-        wait=wait_random_exponential(min=1, max=500),  # 等待时间：最小1秒，最大300秒，指数退避
+        wait=wait_fixed(3),  # 固定等待3秒，无限重试
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -218,8 +216,7 @@ class OpenAILLM(BaseLLM):
         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))
 
     @retry(
-        stop=stop_after_attempt(30),  # 重试30次
-        wait=wait_random_exponential(min=1, max=500),  # 等待时间：最小1秒，最大300秒，指数退避
+        wait=wait_fixed(3),  # 固定等待3秒，无限重试
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -277,8 +274,7 @@ class OpenAILLM(BaseLLM):
        return ['max_tokens']
 
     @retry(
-        stop=stop_after_attempt(30),  # 重试30次
-        wait=wait_random_exponential(min=1, max=500),  # 等待时间：最小1秒，最大300秒，指数退避
+        wait=wait_fixed(3),  # 固定等待3秒，无限重试
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类

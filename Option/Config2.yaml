@@ -15,26 +15,31 @@ llm:
 
 # 检索专用LLM配置 
 retrieval_llm:  
-  api_type: "openai" # 使用ollama本地部署的qwen3:32b
-  base_url: 'http://localhost:11434/v1'
-  model: "qwen3:32b"
-  api_key: "ollama"
+  # api_type: "openai" # 使用ollama本地部署的qwen3:32b
+  # base_url: 'http://localhost:11434/v1'
+  # model: "qwen3:32b"
+  # api_key: "ollama"
 
-  # api_type: "open_llm" # 使用本地vllm
-  # base_url: "http://localhost:8002/v1"
-  # model: "qwen3-4b"
-  # max_token: 6144
-  # MAX_MODEL_LEN: 32768
-  # temperature: 0.6
+  api_type: "open_llm" # 使用本地vllm
+  base_url: "http://localhost:8002/v1"
+  model: "qwen3-32b"
+  max_token: 6144
+  MAX_MODEL_LEN: 32768
+  temperature: 0.6
 
 
 # 评估专用LLM配置
 eval_llm:
-  api_type: "openai" # 使用ollama本地部署的qwen3:32b
-  base_url: 'http://localhost:11434/v1'
-  model: "qwen3:32b"
-  api_key: "ollama"
-
+  # api_type: "openai" # 使用ollama本地部署的qwen3:32b
+  # base_url: 'http://localhost:11434/v1'
+  # model: "qwen3:32b"
+  # api_key: "ollama"
+  api_type: "open_llm" # 使用本地vllm
+  base_url: "http://localhost:8002/v1"
+  model: "qwen3-32b"
+  max_token: 6144
+  MAX_MODEL_LEN: 32768
+  temperature: 0.6
 
 embedding:
   api_type: "hf"  # or  ollama / openai.
