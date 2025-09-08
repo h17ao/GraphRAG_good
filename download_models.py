@@ -39,7 +39,7 @@ def main():
     models = [
         ("AI-ModelScope/all-MiniLM-L6-v2", "../cache/models/modelscope/hub/models/AI-ModelScope/all-MiniLM-L6-v2", "嵌入模型"),
         # ("Qwen/Qwen3-8B", "../cache/models/modelscope/hub/models/qwen/Qwen3-8B", "Qwen3-8B"),
-        ("Qwen/Qwen3-4B", "../cache/models/modelscope/hub/models/qwen/Qwen3-4B", "Qwen3-4B"),
+        # ("Qwen/Qwen3-4B", "../cache/models/modelscope/hub/models/qwen/Qwen3-4B", "Qwen3-4B"),
         ("Qwen/Qwen3-32B", "../cache/models/modelscope/hub/models/qwen/Qwen3-32B", "Qwen3-32B")
         # ("Qwen/Qwen3-0.6B", "../cache/models/modelscope/hub/models/qwen/Qwen3-0.6B", "Qwen3-1.7B"),
         # ("Qwen/Qwen3-0.6B", "../cache/models/modelscope/hub/models/qwen/Qwen3-0.6B", "Qwen3-0.6B")        
