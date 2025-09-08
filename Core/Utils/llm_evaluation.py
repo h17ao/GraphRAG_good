@@ -45,7 +45,6 @@ Predicted Answer: {answer}.
         
 Please provide your evaluation in the following format, 1 means correct and 0 means incorrect:
 <correctness>1 or 0</correctness> 
-<reasoning>your detailed reasoning</reasoning>
 """
         
     def extract_content_outside_think_tags(self, text):
@@ -84,9 +83,9 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
                 
                 # 检查是否包含必需的XML标签
                 correctness_match = re.search(r'<correctness>(.*?)</correctness>', response_text, re.DOTALL)
-                reasoning_match = re.search(r'<reasoning>(.*?)</reasoning>', response_text, re.DOTALL)
+                # reasoning_match = re.search(r'<reasoning>(.*?)</reasoning>', response_text, re.DOTALL)
                 
-                if correctness_match and reasoning_match:
+                if correctness_match:  # and reasoning_match:
                     # 格式正确，解析correctness内容
                     correctness_content = correctness_match.group(1).strip()
                     if correctness_content == '1':
@@ -111,8 +110,8 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
                         missing_tags = []
                         if not correctness_match:
                             missing_tags.append("correctness")
-                        if not reasoning_match:
-                            missing_tags.append("reasoning")
+                        # if not reasoning_match:
+                        #     missing_tags.append("reasoning")
                         logger.warning(f"响应格式不符合要求，缺少标签: {missing_tags}，第{attempt}次重试")
                         await asyncio.sleep(1)
                         continue
