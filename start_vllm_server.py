@@ -16,7 +16,7 @@ PORT = 8002
 # ========== RTX 4090双卡分布式配置（张量并行）==========
 GPU_MEMORY_UTILIZATION = 0.85  # 4090 24GB显存利用率 (70%，适应其他进程占用)
 MAX_MODEL_LEN = 32768  # 4090显存限制，适中序列长度
-MAX_NUM_SEQS = 50     # 4090并发数（适中配置）
+MAX_NUM_SEQS = 60     # 4090并发数（适中配置）
 MAX_NUM_BATCHED_TOKENS = 128  # 4090批处理大小（保守配置）
 ENABLE_CHUNKED_PREFILL = True   # 分块预填充（减少峰值显存）
 ENABLE_PREFIX_CACHING = False   # 暂时关闭前缀缓存（减少显存占用）
@@ -103,4 +103,4 @@ except subprocess.CalledProcessError as e:
     print(f"❌ vLLM服务启动失败: {e}")
     sys.exit(1)
 except KeyboardInterrupt:
-    print("\n🛑 服务已停止") 
+    print("\n🛑 服务已停止")
