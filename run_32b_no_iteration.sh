@@ -1,3 +1,5 @@
+export CUDA_VISIBLE_DEVICES=3
+
 python main.py -opt Option/Method/GR.yaml -dataset_name hotpotqa
 python main.py -opt Option/Method/HippoRAG.yaml -dataset_name hotpotqa
 python main.py -opt Option/Method/Dalk.yaml -dataset_name hotpotqa
