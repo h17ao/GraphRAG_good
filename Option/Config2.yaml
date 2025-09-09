@@ -22,7 +22,7 @@ retrieval_llm:
 
   api_type: "open_llm" # 使用本地vllm
   base_url: "http://localhost:8002/v1"
-  model: "qwen3-32b"
+  model: "qwen3-1.7b"
   max_token: 6144
   MAX_MODEL_LEN: 32768
   temperature: 0.6
@@ -36,7 +36,7 @@ eval_llm:
   # api_key: "ollama"
   api_type: "open_llm" # 使用本地vllm
   base_url: "http://localhost:8002/v1"
-  model: "qwen3-32b"
+  model: "qwen3-1.7b"
   max_token: 6144
   MAX_MODEL_LEN: 32768
   temperature: 0.6
