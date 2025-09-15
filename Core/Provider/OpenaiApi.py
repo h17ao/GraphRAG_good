@@ -103,7 +103,8 @@ class OpenAILLM(BaseLLM):
         return params
 
     @retry(
-        wait=wait_fixed(3),  # 固定等待3秒，无限重试
+        wait=wait_fixed(3),  # 固定等待3秒
+        stop=stop_after_attempt(30),  # 最多重试100次
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -179,7 +180,8 @@ class OpenAILLM(BaseLLM):
 
 
     @retry(
-        wait=wait_fixed(3),  # 固定等待3秒，无限重试
+        wait=wait_fixed(3),  # 固定等待3秒
+        stop=stop_after_attempt(30),  # 最多重试100次
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -199,7 +201,8 @@ class OpenAILLM(BaseLLM):
         return rsp
 
     @retry(
-        wait=wait_fixed(3),  # 固定等待3秒，无限重试
+        wait=wait_fixed(3),  # 固定等待3秒
+        stop=stop_after_attempt(30),  # 最多重试100次
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -216,7 +219,8 @@ class OpenAILLM(BaseLLM):
         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))
 
     @retry(
-        wait=wait_fixed(3),  # 固定等待3秒，无限重试
+        wait=wait_fixed(3),  # 固定等待3秒
+        stop=stop_after_attempt(30),  # 最多重试100次
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类
@@ -274,7 +278,8 @@ class OpenAILLM(BaseLLM):
        return ['max_tokens']
 
     @retry(
-        wait=wait_fixed(3),  # 固定等待3秒，无限重试
+        wait=wait_fixed(3),  # 固定等待3秒
+        stop=stop_after_attempt(30),  # 最多重试100次
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type((
             APIError,           # OpenAI API错误的基类

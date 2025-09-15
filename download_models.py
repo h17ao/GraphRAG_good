@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GraphRAG模型下载脚本
-- 下载模型 (all-MiniLM-L6-v2, Qwen3-4B, Qwen3-32B)
+- 下载模型 (all-MiniLM-L6-v2, Qwen3-1.7B, DeepSeek-LLM-7B-Chat)
 """
 
 from modelscope import snapshot_download
@@ -41,8 +41,9 @@ def main():
         # ("Qwen/Qwen3-8B", "../cache/models/modelscope/hub/models/qwen/Qwen3-8B", "Qwen3-8B"),
         # ("Qwen/Qwen3-4B", "../cache/models/modelscope/hub/models/qwen/Qwen3-4B", "Qwen3-4B"),
         # ("Qwen/Qwen3-32B", "../cache/models/modelscope/hub/models/qwen/Qwen3-32B", "Qwen3-32B")
-        ("Qwen/Qwen3-1.7B", "../cache/models/modelscope/hub/models/qwen/Qwen3-1.7B", "Qwen3-1.7B")
-        # ("Qwen/Qwen3-0.6B", "../cache/models/modelscope/hub/models/qwen/Qwen3-0.6B", "Qwen3-0.6B")        
+        ("Qwen/Qwen3-8B", "../cache/models/modelscope/hub/models/qwen/Qwen3-8B", "Qwen3-8B"),
+        # ("Qwen/Qwen3-0.6B", "../cache/models/modelscope/hub/models/qwen/Qwen3-0.6B", "Qwen3-0.6B")
+        ("deepseek-ai/DeepSeek-R1-Distill-Llama-8B", "../cache/models/modelscope/hub/models/deepseek-ai/DeepSeek-R1-Distill-Llama-8B", "DeepSeek-R1-Distill-Llama-8B")
     ]
     
     success_count = 0

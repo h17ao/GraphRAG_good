@@ -4,6 +4,7 @@ import re
 import asyncio
 import pandas as pd
 from pathlib import Path
+from tenacity import RetryError
 from Core.Common.Logger import logger
 from Core.Common.LLM import LLM, EvalLLM
 from Core.Common.Context import Context
@@ -43,8 +44,7 @@ Gold Answer: {gold_answer}.
 
 Predicted Answer: {answer}.
         
-Please provide your evaluation in the following format, 1 means correct and 0 means incorrect:
-<correctness>1 or 0</correctness> 
+Please only return 1 (means correct) or 0 (means incorrect) in a concise way.
 """
         
     def extract_content_outside_think_tags(self, text):
@@ -81,49 +81,42 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
                 # 提取<think></think>标签以外的内容
                 response_text = self.extract_content_outside_think_tags(raw_response).strip()
                 
-                # 检查是否包含必需的XML标签
-                correctness_match = re.search(r'<correctness>(.*?)</correctness>', response_text, re.DOTALL)
-                # reasoning_match = re.search(r'<reasoning>(.*?)</reasoning>', response_text, re.DOTALL)
-                
-                if correctness_match:  # and reasoning_match:
-                    # 格式正确，解析correctness内容
-                    correctness_content = correctness_match.group(1).strip()
-                    if correctness_content == '1':
+                # 直接提取第一个字符来判断是0还是1
+                if response_text and len(response_text) > 0:
+                    first_char = response_text[0]
+                    if first_char == '1':
                         eval_score = 1
-                    elif correctness_content == '0':
+                        return eval_score, response_text
+                    elif first_char == '0':
                         eval_score = 0
+                        return eval_score, response_text
                     else:
-                        # correctness标签存在但内容无效，继续重试
+                        # 第一个字符不是0或1，继续重试
                         if attempt < max_attempts:
-                            logger.warning(f"correctness标签内容必须是纯净的'1'或'0'，当前内容: '{correctness_content}'，第{attempt}次重试")
+                            logger.warning(f"响应的第一个字符必须是'1'或'0'，当前是: '{first_char}'，第{attempt}次重试")
                             await asyncio.sleep(1)
                             continue
                         else:
-                            logger.error(f"达到最大重试次数，correctness内容仍无效: '{correctness_content}'，默认返回0")
-                            eval_score = 0
-                    
-                    # 格式正确，返回结果（保存原始响应用于调试，但实际处理使用清理后的响应）
-                    return eval_score, response_text
+                            logger.error(f"达到最大重试次数，第一个字符仍无效: '{first_char}'，默认返回0")
+                            return 0, response_text
                 else:
-                    # 格式不正确，需要重试
+                    # 响应为空，需要重试
                     if attempt < max_attempts:
-                        missing_tags = []
-                        if not correctness_match:
-                            missing_tags.append("correctness")
-                        # if not reasoning_match:
-                        #     missing_tags.append("reasoning")
-                        logger.warning(f"响应格式不符合要求，缺少标签: {missing_tags}，第{attempt}次重试")
+                        logger.warning(f"响应为空，第{attempt}次重试")
                         await asyncio.sleep(1)
                         continue
                     else:
-                        # 达到最大重试次数，格式仍不正确
-                        logger.error(f"达到最大重试次数{max_attempts}，响应格式仍不符合要求，默认返回0")
-                        return 0, response_text
+                        logger.error(f"达到最大重试次数{max_attempts}，响应仍为空，默认返回0")
+                        return 0, response_text or "Empty response"
                         
+            except RetryError as e:
+                # 捕获底层API的RetryError，直接返回0并继续评估
+                logger.error(f"底层API重试失败，已达到最大重试次数: {e}，返回评估分数0")
+                return 0, f"API Retry Error: {str(e)}"
             except Exception as e:
                 if attempt < max_attempts:
-                    logger.warning(f"评估出错: {e}，第{attempt}次重试")
-                    await asyncio.sleep(1)
+                    logger.warning(f"评估出错: {e}，第{attempt}/{max_attempts}次重试")
+                    await asyncio.sleep(retry_interval)
                     continue
                 else:
                     logger.error(f"达到最大重试次数{max_attempts}，评估出错: {e}，默认返回0")
@@ -155,11 +148,14 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
         results = await asyncio.gather(*tasks)
         
         correct_count = 0
+        api_failure_count = 0  # 统计API失败导致的0分记录
         for idx, eval_score, eval_response in results:
             df.loc[idx, "llm_eval_correct"] = eval_score
             df.loc[idx, "llm_eval_response"] = eval_response  # 记录完整的LLM响应
             if eval_score == 1:
                 correct_count += 1
+            elif "API Retry Error:" in str(eval_response):
+                api_failure_count += 1
         
         total_time = time.time() - start_time
         accuracy = correct_count / len(df)
@@ -181,9 +177,16 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
         
         df.to_json(results_dir / f"llm_eval_results_{timestamp}.json", orient="records", lines=True)
         
+        # 计算各类统计数据
+        incorrect_count = len(df) - correct_count  # 总的错误数量
+        eval_failure_count = incorrect_count - api_failure_count  # 评估判定为错误的数量（排除API失败）
+        
         summary = {
             "total_count": len(df),
             "correct_count": correct_count,
+            "incorrect_count": incorrect_count,
+            "eval_failure_count": eval_failure_count,  # 评估判定为错误的数量
+            "api_failure_count": api_failure_count,    # API失败导致的0分数量
             "accuracy": accuracy,
             "total_time": total_time,
             "avg_time_per_item": total_time / len(df),
@@ -197,6 +200,7 @@ Please provide your evaluation in the following format, 1 means correct and 0 me
             json.dump({"summary": summary}, f, indent=2)
         
         print(f"LLM评估完成: 准确率 {accuracy:.4f}, 耗时 {total_time:.2f}秒")
+        print(f"统计详情: 总计{len(df)}条, 正确{correct_count}条, 评估错误{eval_failure_count}条, API失败{api_failure_count}条")
 
 
 async def wrapper_llm_evaluation(path, api_key=None, base_url=None, model=None, config=None):

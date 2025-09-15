@@ -35,7 +35,7 @@ TOKEN_COSTS = {
     "gpt-4-turbo-2024-04-09": {"prompt": 0.01, "completion": 0.03},
     "gpt-4-vision-preview": {"prompt": 0.01, "completion": 0.03},  # TODO add extra image price calculator
     "gpt-4-1106-vision-preview": {"prompt": 0.01, "completion": 0.03},
-    "gpt-4o": {"prompt": 0.005, "completion": 0.015},
+    "gpt-4o": {"prompt": 0.0025, "completion": 0.01},
     "gpt-4o-mini": {"prompt": 0.00015, "completion": 0.0006},
     "gpt-4o-mini-2024-07-18": {"prompt": 0.00015, "completion": 0.0006},
     "gpt-4o-2024-05-13": {"prompt": 0.005, "completion": 0.015},
@@ -84,6 +84,7 @@ TOKEN_COSTS = {
     "deepseek-chat": {"prompt": 0.00014, "completion": 0.00028},
     "deepseek-coder": {"prompt": 0.00014, "completion": 0.00028},
     "deepseek-v3-0324": {"prompt": 0.0001, "completion": 0.0001},  # DeepSeek V3 model
+    "deepseek-r1-distill-llama-8b": {"prompt": 0.0000417, "completion": 0.0000417},  # DeepSeek R1 Distill Llama 8B (~0.3元/M tokens)
     # For ark model https://www.volcengine.com/docs/82379/1099320
     "doubao-lite-4k-240515": {"prompt": 0.000043, "completion": 0.000086},
     "doubao-lite-32k-240515": {"prompt": 0.000043, "completion": 0.000086},
