@@ -1,10 +1,12 @@
 Data/hotpotqa/
+
 Data/hotpotqa_all/
 Data/2wiki
 Data/musique
 Data/graphrag-bench
 sft_data/
 2wiki/
+hotpotqa_1/
 musique/
 hotpotqa/
 hotpotqa_all/

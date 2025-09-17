@@ -173,6 +173,9 @@ class OpenAILLM(BaseLLM):
             kwargs.pop("max_tokens")
         if max_tokens != None:
             kwargs["max_tokens"] = max_tokens
+        # 添加chat_template_kwargs支持，用于控制Qwen3思考模式等
+        if self.config.chat_template_kwargs:
+            kwargs["extra_body"] = {"chat_template_kwargs": self.config.chat_template_kwargs}
         if extra_kwargs:
             kwargs.update(extra_kwargs)
         return kwargs

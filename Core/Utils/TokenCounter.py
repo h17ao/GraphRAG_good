@@ -44,9 +44,12 @@ TOKEN_COSTS = {
     "o1-preview-2024-09-12": {"prompt": 0.015, "completion": 0.06},
     "o1-mini": {"prompt": 0.003, "completion": 0.012},
     "o1-mini-2024-09-12": {"prompt": 0.003, "completion": 0.012},
-    "qwen3-4b": {"prompt": 0.0002, "completion": 0.0006},
-    "qwen3-8b": {"prompt": 0.002, "completion": 0.02},
-    "qwen3:32b": {"prompt": 0.0, "completion": 0.0},  # Local ollama deployment, no cost
+    "qwen3-1.7b": {"prompt": 0.0001, "completion": 0.0001},
+    "qwen3-4b": {"prompt": 0.0001, "completion": 0.0001},
+    "qwen3-8b": {"prompt": 0.0001, "completion": 0.0001},
+    "qwen3-14b": {"prompt": 0.0001, "completion": 0.0001},  # Local vllm deployment, no cost
+    "qwen3-32b": {"prompt": 0.0001, "completion": 0.0001},  # Local vllm deployment, no cost
+    "qwen3:32b": {"prompt": 0.0001, "completion": 0.0001},  # Local ollama deployment, no cost
     "text-embedding-ada-002": {"prompt": 0.0004, "completion": 0.0},
     "glm-3-turbo": {"prompt": 0.0007, "completion": 0.0007},  # 128k version, prompt + completion tokens=0.005￥/k-tokens
     "glm-4": {"prompt": 0.014, "completion": 0.014},  # 128k version, prompt + completion tokens=0.1￥/k-tokens
@@ -83,7 +86,8 @@ TOKEN_COSTS = {
     "google/gemini-pro-1.5": {"prompt": 0.0025, "completion": 0.0075},  # for openrouter, end
     "deepseek-chat": {"prompt": 0.00014, "completion": 0.00028},
     "deepseek-coder": {"prompt": 0.00014, "completion": 0.00028},
-    "deepseek-v3-0324": {"prompt": 0.0001, "completion": 0.0001},  # DeepSeek V3 model
+    "deepseek-v3-0324": {"prompt": 0.0001, "completion": 0.0001},  # DeepSeek V3 model (old pricing)
+    "DeepSeek-V3": {"prompt": 0.002, "completion": 0.008},  # DeepSeek V3 model ($2/M input, $8/M output tokens)
     "deepseek-r1-distill-llama-8b": {"prompt": 0.0000417, "completion": 0.0000417},  # DeepSeek R1 Distill Llama 8B (~0.3元/M tokens)
     # For ark model https://www.volcengine.com/docs/82379/1099320
     "doubao-lite-4k-240515": {"prompt": 0.000043, "completion": 0.000086},
@@ -286,6 +290,7 @@ TOKEN_MAX = {
     "deepseek-chat": 32768,
     "deepseek-coder": 16385,
     "deepseek-v3-0324": 128000,  # DeepSeek V3 model max tokens
+    "DeepSeek-V3": 128000,  # DeepSeek V3 model max tokens
     "doubao-lite-4k-240515": 4000,
     "doubao-lite-32k-240515": 32000,
     "doubao-lite-128k-240515": 128000,
@@ -305,6 +310,8 @@ TOKEN_MAX = {
     "qwen2-7b-instruct": 32768,
     "qwen2-1.5b-instruct": 32768,
     "qwen2-0.5b-instruct": 32768,
+    "qwen3-14b": 131072,  # Qwen3-14B model max tokens (131K context, 32768 × 4)
+    "qwen3-32b": 131072,  # Qwen3-32B model max tokens (131K context, 32768 × 4)
     "qwen1.5-110b-chat": 32000,
     "qwen1.5-72b-chat": 32000,
     "qwen1.5-32b-chat": 32000,

@@ -185,7 +185,7 @@ if __name__ == "__main__":
         save_path = results_file
     else:
         print(f"🚀 开始检索阶段：从第 {start_idx + 1} 条继续（共 {len(query_dataset)} 条）")
-        save_path = asyncio.run(wrapper_query(query_dataset, digimon, result_dir, max_concurrent=20))
+        save_path = asyncio.run(wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50))
 
     # 执行评估
     print(f"📊 开始评估阶段")

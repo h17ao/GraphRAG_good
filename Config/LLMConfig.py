@@ -74,6 +74,7 @@ class LLMConfig(YamlModel):
     context_length: Optional[int] = None  # Max input tokens
     MAX_MODEL_LEN: Optional[int] = None  # Model maximum context length
     max_thinking_length: Optional[int] = None  # 限制Qwen模型的思考长度（仅适用于thinking模式）
+    chat_template_kwargs: Optional[dict] = None  # 聊天模板参数，用于控制Qwen3思考模式等
 
     # For Amazon Bedrock
     region_name: str = None

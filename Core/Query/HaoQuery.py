@@ -36,7 +36,7 @@ class HaoQuery(BaseQuery):
             model_max_len = 128000  # 默认值，适用于大多数现代LLM
         max_token = getattr(self.llm.config, 'max_token', None)  # 获取最大生成token数
         if max_token is None:
-            max_token = 8192  # 默认值，适用于大多数LLM
+            max_token = 28000  # 默认值，适用于大多数LLM
         calculated_max_tokens = model_max_len - max_token - 3000  # MAX_MODEL_LEN - max_token - 3000
         self.max_context_tokens = getattr(config, 'max_context_tokens', calculated_max_tokens)
         logger.info(f"HaoQuery上下文token限制: {self.max_context_tokens} (模型MAX_MODEL_LEN: {model_max_len}, max_token: {max_token})")
