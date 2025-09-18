@@ -202,8 +202,15 @@ class GRQuery(BaseQuery):
     async def generation_qa(self, query: str, context: str):
         messages = [{"role": "system", "content": "You are an AI assistant that helps people find information."},
                     {"role": "user", "content": context + query}]
-        response = await self.llm.aask(msg=messages)
-        return response
+        try:
+            response = await self.llm.aask(msg=messages)
+            return response
+        except Exception as e:
+            err = str(e)
+            if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                logger.warning(f"GRQuery: 内容审查失败，跳过该条: {err}")
+                return "由于内容审查限制，已跳过该条请求。"
+            raise
 
     async def generation_summary(self, query, context):
         if context is None:

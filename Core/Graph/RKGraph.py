@@ -80,12 +80,24 @@ class RKGraph(BaseGraph):
 
         working_memory.add(Message(content=prompt, role="user"))
         final_result = await self.llm.aask(prompt)
+        
+        # Handle case where final_result is None
+        if final_result is None:
+            logger.warning("LLM returned None result for entity extraction, using empty string")
+            final_result = ""
+        
         working_memory.add(Message(content=final_result, role="assistant"))
 
         for glean_idx in range(self.config.max_gleaning):
             working_memory.add(Message(content=GraphPrompt.ENTITY_CONTINUE_EXTRACTION, role="user"))
             context = "\n".join(f"{msg.sent_from}: {msg.content}" for msg in working_memory.get())
             glean_result = await self.llm.aask(context)
+            
+            # Handle case where glean_result is None
+            if glean_result is None:
+                logger.warning(f"LLM returned None result for gleaning iteration {glean_idx}, using empty string")
+                glean_result = ""
+            
             working_memory.add(Message(content=glean_result, role="assistant"))
             final_result += glean_result
 

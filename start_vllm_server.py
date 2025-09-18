@@ -8,13 +8,13 @@ import sys
 import os
 
 # 模型配置
-MODEL_PATH = "/home/yh/cache/models/modelscope/hub/models/qwen/Qwen3-14B"
+MODEL_PATH = "/home/yh/cache/models/modelscope/hub/models/qwen/trained_qwen1.7b_step_200"
 # MODEL_PATH = "../GraphRAG-RL-verl/tmp_epoch3"  # 第3个epoch训练好的模型路径
 HOST = "0.0.0.0"
-PORT = 8002
+PORT = 8000
 
 # ========== RTX 4090四卡分布式配置（张量并行）==========
-GPU_MEMORY_UTILIZATION = 0.80  # 4090 24GB显存利用率 (70%，适应其他进程占用)
+GPU_MEMORY_UTILIZATION = 0.85  # 4090 24GB显存利用率 (70%，适应其他进程占用)
 MAX_MODEL_LEN = 32768  # 扩展上下文长度，支持大规模文档处理 (32768 × 4)
 MAX_NUM_SEQS = 100     # 4090并发数（适中配置）
 MAX_NUM_BATCHED_TOKENS = 256  # 4090批处理大小（保守配置）
@@ -24,7 +24,7 @@ BLOCK_SIZE = 16                 # vLLM要求：块大小必须是16的倍数
 # 注意：不使用量化参数，避免影响实验结果精度
 
 # 设置使用的GPU设备 (使用四张4090: GPU 0,1,2,3)
-os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # 自动检测多卡
 cuda_visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES", "")
@@ -35,7 +35,7 @@ else:
     tensor_parallel_size = 1
 
 print("============================================")
-print("🔥 GraphRAG vLLM本地服务启动器（RTX 4090双卡张量并行版 - Qwen3-14B）")
+print("🔥 GraphRAG vLLM本地服务启动器（RTX 4090双卡张量并行版 - Qwen3-1.7B）")
 print("============================================")
 print(f"[GPU检测] CUDA_VISIBLE_DEVICES = {cuda_visible_devices}")
 print(f"[GPU检测] tensor_parallel_size = {tensor_parallel_size}")
@@ -64,7 +64,7 @@ cmd = [
     "--max-num-seqs", str(MAX_NUM_SEQS),
     "--max-num-batched-tokens", str(MAX_NUM_BATCHED_TOKENS),
     "--trust-remote-code",
-    "--served-model-name", "qwen3-14b",
+    "--served-model-name", "trained_qwen3-1.7b",
     "--block-size", str(BLOCK_SIZE),         # 显存块大小优化
     "--disable-custom-all-reduce",           # 单卡优化
     "--max-seq-len-to-capture", str(MAX_MODEL_LEN),  # 序列捕获优化

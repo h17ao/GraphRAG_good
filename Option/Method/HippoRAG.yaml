@@ -43,7 +43,7 @@ retriever:
     top_k_entity_for_ppr: 8
     node_specificity: True
     damping: 0.1
-    top_k: 10
+    top_k: 5
 
 query: 
     query_type: qa
@@ -52,7 +52,7 @@ query:
     augmentation_ppr: False
     level: 2
     community_information: True
-    retrieve_top_k: 10
+    retrieve_top_k: 5
     # naive search
     naive_max_token_for_text_unit: 12000
     # local search

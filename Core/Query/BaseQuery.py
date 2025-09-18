@@ -60,15 +60,20 @@ class BaseQuery(ABC):
         entities = []
         try:
             ner_messages = GraphPrompt.NER.format(user_input=query)
+            try:
+                response_content = await self.llm.aask(ner_messages)
+            except Exception as e:
+                err = str(e)
+                if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                    logger.warning(f"BaseQuery: NER 调用内容审查失败，降级为空: {err}")
+                    return []
+                raise
 
-            response_content = await self.llm.aask(ner_messages)
             entities = prase_json_from_response(response_content)
-
             if 'named_entities' not in entities:
                 entities = []
             else:
                 entities = entities['named_entities']
-
             entities = [clean_str(p) for p in entities]
         except Exception as e:
             logger.error('Error in Retrieval NER: {}'.format(e))
@@ -77,7 +82,14 @@ class BaseQuery(ABC):
 
     async def extract_query_keywords(self, query, mode="low"):
         kw_prompt = QueryPrompt.KEYWORDS_EXTRACTION.format(query=query)
-        result = await self.llm.aask(kw_prompt)
+        try:
+            result = await self.llm.aask(kw_prompt)
+        except Exception as e:
+            err = str(e)
+            if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                logger.warning(f"BaseQuery: 关键词抽取内容审查失败，降级为空: {err}")
+                return ""
+            raise
         keywords = None
         keywords_data = prase_json_from_response(result)
         if mode == "low":

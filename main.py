@@ -152,6 +152,9 @@ if __name__ == "__main__":
     parser.add_argument("-opt", type=str, help="Path to option YMAL file.")
     parser.add_argument("-dataset_name", type=str, help="Name of the dataset.")
     parser.add_argument("-method_name", type=str, help="Name of the method.", default=None)
+    parser.add_argument("--retrieval_model", type=str, help="Override retrieval LLM model name", default=None)
+    parser.add_argument("--retrieval_base_url", type=str, help="Override retrieval LLM base_url", default=None)
+    parser.add_argument("--exp_name", type=str, help="Override experiment name", default=None)
     args = parser.parse_args()
 
     # 如果没有提供method_name，尝试从配置文件路径中自动提取
@@ -163,7 +166,40 @@ if __name__ == "__main__":
             method_name = opt_path.stem  # 去掉扩展名的文件名
             print(f"🔍 自动从配置文件路径提取方法名: {method_name}")
 
+    # 如果有exp_name参数，先临时修改环境变量，让Config.parse使用正确的exp_name
+    original_exp_name = None
+    if getattr(args, "exp_name", None):
+        # 临时设置环境变量，让Config.parse使用命令行指定的exp_name
+        import os
+        original_exp_name = os.environ.get("EXP_NAME")
+        os.environ["EXP_NAME"] = args.exp_name
+        print(f"🔧 临时设置实验名称为: {args.exp_name}")
+
     opt = Config.parse(Path(args.opt), dataset_name=args.dataset_name, method_name=method_name)
+    
+    # 恢复原始环境变量
+    if original_exp_name is not None:
+        if original_exp_name:
+            os.environ["EXP_NAME"] = original_exp_name
+        else:
+            os.environ.pop("EXP_NAME", None)
+
+    # 覆盖检索模型名称（可选）
+    if getattr(args, "retrieval_model", None):
+        if not hasattr(opt, "retrieval_llm") or opt.retrieval_llm is None:
+            raise ValueError("配置中未找到 retrieval_llm，请在 Option/Config2.yaml 中设置后再使用 --retrieval_model 覆盖")
+        # 覆盖模型名
+        opt.retrieval_llm.model = args.retrieval_model
+        print(f"🔧 覆盖检索模型为: {opt.retrieval_llm.model}")
+
+    # 覆盖检索模型的 base_url（可选）
+    if getattr(args, "retrieval_base_url", None):
+        if not hasattr(opt, "retrieval_llm") or opt.retrieval_llm is None:
+            raise ValueError("配置中未找到 retrieval_llm，请在 Option/Config2.yaml 中设置后再使用 --retrieval_base_url 覆盖")
+        opt.retrieval_llm.base_url = args.retrieval_base_url
+        print(f"🔧 覆盖检索 base_url 为: {opt.retrieval_llm.base_url}")
+
+    # exp_name 已在 Config.parse() 阶段通过环境变量处理
     digimon = GraphRAG(config=opt)
     result_dir = check_dirs(opt)
 

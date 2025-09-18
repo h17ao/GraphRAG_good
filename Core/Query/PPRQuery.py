@@ -15,6 +15,50 @@ class PPRQuery(BaseQuery):
     
     def __init__(self, config, retriever_context):
         super().__init__(config, retriever_context)
+        
+        # 配置上下文token限制 - 基于检索模型的MAX_MODEL_LEN计算
+        model_max_len = getattr(self.llm.config, 'MAX_MODEL_LEN', None)
+        max_token = getattr(self.llm.config, 'max_token', None)
+        
+        if model_max_len is None:
+            raise ValueError(f"检索LLM配置中缺少MAX_MODEL_LEN参数，请在Config2.yaml的retrieval_llm部分设置MAX_MODEL_LEN")
+        if max_token is None:
+            raise ValueError(f"检索LLM配置中缺少max_token参数，请在Config2.yaml的retrieval_llm部分设置max_token")
+            
+        calculated_max_tokens = model_max_len - max_token - 3000
+        self.max_context_tokens = getattr(config, 'max_context_tokens', calculated_max_tokens)
+        logger.info(f"PPRQuery上下文token限制: {self.max_context_tokens} (模型MAX_MODEL_LEN: {model_max_len}, max_token: {max_token})")
+
+    def _truncate_context(self, context_text):
+        """截断上下文文本以符合token限制"""
+        if self.max_context_tokens <= 0:
+            return context_text
+            
+        from Core.Common.Utils import truncate_str_by_token_size, encode_string_by_tiktoken
+        import time
+        
+        start_time = time.time()
+        original_tokens = len(encode_string_by_tiktoken(context_text))
+        
+        truncated_text = truncate_str_by_token_size(context_text, self.max_context_tokens)
+        
+        if truncated_text != context_text:
+            truncated_tokens = len(encode_string_by_tiktoken(truncated_text))
+            elapsed_time = time.time() - start_time
+            logger.info(f"PPRQuery上下文截断: {original_tokens} tokens -> {truncated_tokens} tokens，耗时: {elapsed_time:.3f}s")
+            
+            # 安全检查：确保截断后的token数不超过模型限制
+            model_max_len = getattr(self.llm.config, 'MAX_MODEL_LEN', 32768)
+            max_token = getattr(self.llm.config, 'max_token', 6144)
+            safe_limit = model_max_len - max_token - 3000  # 额外3000token的安全边距
+            
+            if truncated_tokens > safe_limit:
+                logger.warning(f"截断后token数({truncated_tokens})仍超过安全限制({safe_limit})，进行二次截断")
+                truncated_text = truncate_str_by_token_size(truncated_text, safe_limit)
+                truncated_tokens = len(encode_string_by_tiktoken(truncated_text))
+                logger.info(f"二次截断后: {truncated_tokens} tokens")
+        
+        return truncated_text
 
     async def reason_step(self, few_shot: list, query: str, passages: list, thoughts: list):
         """
@@ -139,8 +183,17 @@ class PPRQuery(BaseQuery):
             return QueryPrompt.FAIL_RESPONSE
         # For FastGraphRAG 
         if self.config.augmentation_ppr:
+            # 截断context以符合token限制
+            context = self._truncate_context(context)
             msg = QueryPrompt.GENERATE_RESPONSE_QUERY_WITH_REFERENCE.format(query=query, context=context)
-            return await self.llm.aask(msg=msg)
+            try:
+                return await self.llm.aask(msg=msg)
+            except Exception as e:
+                err = str(e)
+                if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                    logger.warning(f"PPRQuery: augmentation_ppr 内容审查失败，返回空: {err}")
+                    return ""
+                raise
         else:
             # For HippoRAG. Note that 5 is the default number of passages to retrieve for HippoRAG souce code
             # Please refer to: https://github.com/OSU-NLP-Group/HippoRAG/blob/main/src/ircot_hipporag.py#L289 
@@ -159,6 +212,9 @@ class PPRQuery(BaseQuery):
                     # 兼容字符串格式
                     user_prompt += f' {passage}\n\n'
             user_prompt += 'Question: ' + query + '\nThought: '
+            
+            # 截断user_prompt以符合token限制
+            user_prompt = self._truncate_context(user_prompt)
             working_memory.add(Message(content=user_prompt, role='user'))
 
             # 将working_memory转换为标准消息格式
@@ -166,7 +222,14 @@ class PPRQuery(BaseQuery):
 
             try:
                 # 使用working_memory管理对话历史，传递空的system_msgs避免冲突
-                response = await self.llm.aask(msg=messages, system_msgs=[])
+                try:
+                    response = await self.llm.aask(msg=messages, system_msgs=[])
+                except Exception as e:
+                    err = str(e)
+                    if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                        print('QA read exception', e)
+                        return ''
+                    raise
             except Exception as e:
                 print('QA read exception', e)
                 return ''

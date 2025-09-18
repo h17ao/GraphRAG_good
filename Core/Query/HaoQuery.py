@@ -32,11 +32,13 @@ class HaoQuery(BaseQuery):
         
         # 配置上下文token限制 - 基于检索模型的MAX_MODEL_LEN计算
         model_max_len = getattr(self.llm.config, 'MAX_MODEL_LEN', None)  # 获取检索模型的最大长度
-        if model_max_len is None:
-            model_max_len = 128000  # 默认值，适用于大多数现代LLM
         max_token = getattr(self.llm.config, 'max_token', None)  # 获取最大生成token数
+        
+        if model_max_len is None:
+            raise ValueError(f"检索LLM配置中缺少MAX_MODEL_LEN参数，请在Config2.yaml的retrieval_llm部分设置MAX_MODEL_LEN")
         if max_token is None:
-            max_token = 28000  # 默认值，适用于大多数LLM
+            raise ValueError(f"检索LLM配置中缺少max_token参数，请在Config2.yaml的retrieval_llm部分设置max_token")
+            
         calculated_max_tokens = model_max_len - max_token - 3000  # MAX_MODEL_LEN - max_token - 3000
         self.max_context_tokens = getattr(config, 'max_context_tokens', calculated_max_tokens)
         logger.info(f"HaoQuery上下文token限制: {self.max_context_tokens} (模型MAX_MODEL_LEN: {model_max_len}, max_token: {max_token})")
@@ -210,7 +212,14 @@ class HaoQuery(BaseQuery):
         for attempt in range(3):
             try:
                 logger.debug(f"推理步骤第 {attempt + 1}/3 次尝试")
-                response = await self.llm.aask(msg=prompt)
+                try:
+                    response = await self.llm.aask(msg=prompt)
+                except Exception as e:
+                    err = str(e)
+                    if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                        logger.warning(f"HaoQuery: 推理步骤内容审查失败，尝试重试: {err}")
+                        continue
+                    raise
                 last_response = response
                 
                 # 调试: 打印传统LLM的推理回复
@@ -396,7 +405,14 @@ class HaoQuery(BaseQuery):
         for attempt in range(3):
             try:
                 logger.debug(f"强制作答第 {attempt + 1}/3 次尝试")
-                response = await self.llm.aask(msg=prompt, system_msgs=["You are a helpful assistant."])
+                try:
+                    response = await self.llm.aask(msg=prompt, system_msgs=["You are a helpful assistant."])
+                except Exception as e:
+                    err = str(e)
+                    if 'data_inspection_failed' in err or 'inappropriate content' in err:
+                        logger.warning(f"HaoQuery: 强制作答内容审查失败，尝试重试: {err}")
+                        continue
+                    raise
                 last_response = response
                 
                 # 调试: 打印传统LLM的强制作答回复

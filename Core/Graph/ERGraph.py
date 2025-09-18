@@ -146,7 +146,17 @@ class ERGraph(BaseGraph):
             maybe_nodes[entity_name].append(entity)
 
         for triple in triples:
-            if isinstance(triple[0], list): triple = triple[0]
+            # 处理字典格式的输入数据
+            if isinstance(triple, dict) and 'triples' in triple:
+                # 如果triple是字典，取第一个三元组
+                if triple['triples'] and len(triple['triples']) > 0:
+                    triple = triple['triples'][0]
+                else:
+                    continue
+            elif isinstance(triple, list) and len(triple) > 0 and isinstance(triple[0], list):
+                # 如果triple是嵌套列表，取第一个元素
+                triple = triple[0]
+            
             if len(triple) != 3:
                 logger.warning(f"triples length is not 3, triple is: {triple}, len is {len(triple)}, so skip it")
                 continue

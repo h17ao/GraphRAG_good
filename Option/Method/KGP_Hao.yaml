@@ -32,12 +32,12 @@ graph:
 # Retrieval Config 
 retriever:
     query_type: hao
-    top_k: 10   
+    top_k: 5
 
 
 query: 
     query_type: qa
-    top_k: 10
+    top_k: 5
     k_nei: 3
 # For HaoQuery
     max_iterations: 5  # 最大迭代次数

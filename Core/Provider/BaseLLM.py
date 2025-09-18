@@ -184,8 +184,8 @@ class BaseLLM(ABC):
         """_achat_completion_stream implemented by inherited class"""
 
     @retry(
-        stop=stop_after_attempt(30),  # haloyang 增加重试次数从6次到30次
-        wait=wait_random_exponential(min=1, max=500),  # haloyang 增加等待时间：最小1秒，最大300秒(5分钟)
+        stop=stop_after_attempt(20),  # 调整为最多重试20次
+        wait=wait_random_exponential(min=1, max=300),  # 最小1秒，最大约8分钟
         after=after_log(logger, logger.level("WARNING").name),
         retry=retry_if_exception_type(ConnectionError),
         retry_error_callback=log_and_reraise,

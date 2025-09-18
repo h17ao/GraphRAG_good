@@ -32,11 +32,11 @@ graph:
 # Retrieval Config 
 retriever:
     query_type: kgp 
-    top_k: 10   
+    top_k: 5   
 
 
 query: 
     query_type: qa
-    top_k: 10
+    top_k: 5
     k_nei: 3
  

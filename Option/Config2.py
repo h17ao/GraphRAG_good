@@ -93,6 +93,12 @@ class Config(WorkingParams, YamlModel):
         final["dataset_name"] = dataset_name
         final["method_name"] = method_name or ""
         
+        # 如果环境变量中有EXP_NAME，优先使用环境变量的值
+        import os
+        env_exp_name = os.environ.get("EXP_NAME")
+        if env_exp_name:
+            final["exp_name"] = env_exp_name
+        
         # 构建working_dir: dataset_name/method_name (如果有method_name)
         if method_name:
             final["working_dir"] = os.path.join(final["working_dir"], dataset_name, method_name)

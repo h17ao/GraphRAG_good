@@ -45,7 +45,8 @@ TOKEN_COSTS = {
     "o1-mini": {"prompt": 0.003, "completion": 0.012},
     "o1-mini-2024-09-12": {"prompt": 0.003, "completion": 0.012},
     "qwen3-1.7b": {"prompt": 0.0001, "completion": 0.0001},
-    "qwen3-4b": {"prompt": 0.0001, "completion": 0.0001},
+    "trained_qwen3-1.7b": {"prompt": 0.0001, "completion": 0.0001},  # 与qwen3-1.7b相同的成本
+    "qwen3-4b": {"prompt": 0.00083, "completion": 0.0025},  # Qwen3-4B model ($0.0830/M input, $0.2500/M output tokens)
     "qwen3-8b": {"prompt": 0.0001, "completion": 0.0001},
     "qwen3-14b": {"prompt": 0.0001, "completion": 0.0001},  # Local vllm deployment, no cost
     "qwen3-32b": {"prompt": 0.0001, "completion": 0.0001},  # Local vllm deployment, no cost
@@ -88,6 +89,7 @@ TOKEN_COSTS = {
     "deepseek-coder": {"prompt": 0.00014, "completion": 0.00028},
     "deepseek-v3-0324": {"prompt": 0.0001, "completion": 0.0001},  # DeepSeek V3 model (old pricing)
     "DeepSeek-V3": {"prompt": 0.002, "completion": 0.008},  # DeepSeek V3 model ($2/M input, $8/M output tokens)
+    "deepseek-ai/DeepSeek-V3": {"prompt": 0.000113, "completion": 0.000451},  # DeepSeek V3 model with namespace prefix
     "deepseek-r1-distill-llama-8b": {"prompt": 0.0000417, "completion": 0.0000417},  # DeepSeek R1 Distill Llama 8B (~0.3元/M tokens)
     # For ark model https://www.volcengine.com/docs/82379/1099320
     "doubao-lite-4k-240515": {"prompt": 0.000043, "completion": 0.000086},
@@ -291,6 +293,7 @@ TOKEN_MAX = {
     "deepseek-coder": 16385,
     "deepseek-v3-0324": 128000,  # DeepSeek V3 model max tokens
     "DeepSeek-V3": 128000,  # DeepSeek V3 model max tokens
+    "deepseek-ai/DeepSeek-V3": 128000,  # DeepSeek V3 model with namespace prefix max tokens
     "doubao-lite-4k-240515": 4000,
     "doubao-lite-32k-240515": 32000,
     "doubao-lite-128k-240515": 128000,

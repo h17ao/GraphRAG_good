@@ -13,6 +13,7 @@ from openai.types.chat import ChatCompletion, ChatCompletionChunk
 from tenacity import (
     after_log,
     retry,
+    retry_if_exception,
     retry_if_exception_type,
     stop_after_attempt,
     wait_random_exponential,
@@ -102,19 +103,28 @@ class OpenAILLM(BaseLLM):
 
         return params
 
+    # 自定义：首次命中内容审查错误则不重试
+    @staticmethod
+    def _should_retry(exc: Exception) -> bool:
+        import re
+        msg = str(exc) if exc is not None else ""
+        if re.search(r"data_inspection_failed|inappropriate content", msg, re.IGNORECASE):
+            return False
+        return isinstance(exc, (
+            APIError,
+            RateLimitError,
+            APITimeoutError,
+            APIConnectionError,
+            ConnectionError,
+            TimeoutError,
+            Exception,
+        ))
+
     @retry(
         wait=wait_fixed(3),  # 固定等待3秒
-        stop=stop_after_attempt(30),  # 最多重试100次
+        stop=stop_after_attempt(20),  # 最多重试20次
         after=after_log(logger, logger.level("WARNING").name),
-        retry=retry_if_exception_type((
-            APIError,           # OpenAI API错误的基类
-            RateLimitError,     # 速率限制错误(429)
-            APITimeoutError,    # API超时错误
-            APIConnectionError, # 连接错误
-            ConnectionError,    # 网络连接错误
-            TimeoutError,       # 超时错误
-            Exception,          # 捕获所有其他异常
-        )),
+        retry=retry_if_exception(_should_retry),
         retry_error_callback=log_and_reraise,
     )
     async def _achat_completion_stream(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT, max_tokens = None) -> str:
@@ -184,17 +194,9 @@ class OpenAILLM(BaseLLM):
 
     @retry(
         wait=wait_fixed(3),  # 固定等待3秒
-        stop=stop_after_attempt(30),  # 最多重试100次
+        stop=stop_after_attempt(20),  # 最多重试20次
         after=after_log(logger, logger.level("WARNING").name),
-        retry=retry_if_exception_type((
-            APIError,           # OpenAI API错误的基类
-            RateLimitError,     # 速率限制错误(429)
-            APITimeoutError,    # API超时错误
-            APIConnectionError, # 连接错误
-            ConnectionError,    # 网络连接错误
-            TimeoutError,       # 超时错误
-            Exception,          # 捕获所有其他异常
-        )),
+        retry=retry_if_exception(_should_retry),
         retry_error_callback=log_and_reraise,
     )
     async def _achat_completion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT, max_tokens = None) -> ChatCompletion:
@@ -205,17 +207,9 @@ class OpenAILLM(BaseLLM):
 
     @retry(
         wait=wait_fixed(3),  # 固定等待3秒
-        stop=stop_after_attempt(30),  # 最多重试100次
+        stop=stop_after_attempt(20),  # 最多重试20次
         after=after_log(logger, logger.level("WARNING").name),
-        retry=retry_if_exception_type((
-            APIError,           # OpenAI API错误的基类
-            RateLimitError,     # 速率限制错误(429)
-            APITimeoutError,    # API超时错误
-            APIConnectionError, # 连接错误
-            ConnectionError,    # 网络连接错误
-            TimeoutError,       # 超时错误
-            Exception,          # 捕获所有其他异常
-        )),
+        retry=retry_if_exception(_should_retry),
         retry_error_callback=log_and_reraise,
     )
     async def acompletion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> ChatCompletion:
@@ -223,17 +217,9 @@ class OpenAILLM(BaseLLM):
 
     @retry(
         wait=wait_fixed(3),  # 固定等待3秒
-        stop=stop_after_attempt(30),  # 最多重试100次
+        stop=stop_after_attempt(20),  # 最多重试20次
         after=after_log(logger, logger.level("WARNING").name),
-        retry=retry_if_exception_type((
-            APIError,           # OpenAI API错误的基类
-            RateLimitError,     # 速率限制错误(429)
-            APITimeoutError,    # API超时错误
-            APIConnectionError, # 连接错误
-            ConnectionError,    # 网络连接错误
-            TimeoutError,       # 超时错误
-            Exception,          # 捕获所有其他异常
-        )),
+        retry=retry_if_exception(_should_retry),
         retry_error_callback=log_and_reraise,
     )
     async def acompletion_text(self, messages: list[dict], stream=False, timeout=USE_CONFIG_TIMEOUT, max_tokens = None, format = "text") -> str:
@@ -282,17 +268,9 @@ class OpenAILLM(BaseLLM):
 
     @retry(
         wait=wait_fixed(3),  # 固定等待3秒
-        stop=stop_after_attempt(30),  # 最多重试100次
+        stop=stop_after_attempt(20),  # 最多重试20次
         after=after_log(logger, logger.level("WARNING").name),
-        retry=retry_if_exception_type((
-            APIError,           # OpenAI API错误的基类
-            RateLimitError,     # 速率限制错误(429)
-            APITimeoutError,    # API超时错误
-            APIConnectionError, # 连接错误
-            ConnectionError,    # 网络连接错误
-            TimeoutError,       # 超时错误
-            Exception,          # 捕获所有其他异常
-        )),
+        retry=retry_if_exception(_should_retry),
         retry_error_callback=log_and_reraise,
     )
     async def openai_embedding(self, text):

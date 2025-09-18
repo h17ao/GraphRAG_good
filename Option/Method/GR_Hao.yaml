@@ -38,7 +38,7 @@ retriever:
     use_entity_similarity_for_ppr: False
     node_specificity: False
     # GR
-    top_k: 10
+    top_k: 5
     use_relations_vdb: True
 
 query:
@@ -52,7 +52,7 @@ query:
     relationships_max_tokens: 2000
 
     # G-Retriever GR
-    top_k: 10
+    top_k: 5
     max_txt_len: 512
     topk_e: 2
     cost_e: 0.5

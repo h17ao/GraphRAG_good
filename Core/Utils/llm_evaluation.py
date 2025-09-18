@@ -56,6 +56,10 @@ Please only return 1 (means correct) or 0 (means incorrect) in a concise way.
         Returns:
             str: 去除<think></think>标签及其内容后的文本
         """
+        # 确保输入是字符串类型
+        if not isinstance(text, str):
+            text = str(text)
+        
         # 使用正则表达式匹配<think>...</think>标签（支持多行）
         pattern = r'<think>.*?</think>'
         # 使用re.DOTALL标志使.匹配包括换行符在内的任何字符
@@ -78,6 +82,9 @@ Please only return 1 (means correct) or 0 (means incorrect) in a concise way.
             try:
                 # 使用项目的LLM系统，这样会自动记录成本
                 raw_response = await self.llm.aask(prompt)
+                # 确保raw_response是字符串类型
+                if not isinstance(raw_response, str):
+                    raw_response = str(raw_response)
                 # 提取<think></think>标签以外的内容
                 response_text = self.extract_content_outside_think_tags(raw_response).strip()
                 
@@ -116,6 +123,7 @@ Please only return 1 (means correct) or 0 (means incorrect) in a concise way.
             except Exception as e:
                 if attempt < max_attempts:
                     logger.warning(f"评估出错: {e}，第{attempt}/{max_attempts}次重试")
+                    retry_interval = 1.0  # 重试间隔1秒
                     await asyncio.sleep(retry_interval)
                     continue
                 else:

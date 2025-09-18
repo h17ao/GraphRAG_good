@@ -188,6 +188,10 @@ class EntityRetriever(BaseRetriever):
 
     @register_retriever_method(type="entity", method_name="from_relation")
     async def _find_relevant_entities_by_relationships(self, seed):
+        if seed is None:
+            logger.warning("Seed is None in _find_relevant_entities_by_relationships, returning empty list")
+            return []
+        
         entity_names = set()
         for e in seed:
             entity_names.add(e["src_id"])

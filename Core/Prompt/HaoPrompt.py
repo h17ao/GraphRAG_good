@@ -3,7 +3,16 @@ HaoPrompt - HaoQuery使用的提示模板
 从HaoQuery.py中提取的原有提示模板
 """
 
-REASONING_STEP_PROMPT_QWEN = """You are a reasoning assistant working with information from a knowledge graph.
+REASONING_STEP_PROMPT_QWEN = """
+**User query**: {query}
+
+------------------------------------------------------------------------------------------------
+
+**Graph evidence**: {context_text}
+
+------------------------------------------------------------------------------------------------
+
+**TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
 Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
@@ -23,17 +32,19 @@ Follow this process for each query:
   <label> unable </label>  
   <query> proposed follow-up question here. </query>
 
-Do not include any text outside the specified tags. Maintain strict adherence to the format.
-
----
-
-User query: {query}
-
-Graph evidence: 
-{context_text}"""
+Do not include any text outside the specified tags. Maintain strict adherence to the format."""
 
 # 强制作答提示模板 - 从HaoQuery._force_answer中提取
-FORCE_ANSWER_PROMPT_QWEN = """You are a reasoning assistant working with information from a knowledge graph.
+FORCE_ANSWER_PROMPT_QWEN = """
+**User query**: {query}
+
+------------------------------------------------------------------------------------------------
+
+**Graph evidence**: {context_text}
+
+------------------------------------------------------------------------------------------------
+
+**TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
 Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
@@ -44,17 +55,20 @@ Follow this process for each query:
 
 - then respond in the following format: 
   <answer> final answer here. </answer>
-
----
-
-User query:  
-{query}
-
-Graph evidence:  
-{context_text}"""
+  
+Do not include any text outside the specified tags. Maintain strict adherence to the format. """
 
 
-REASONING_STEP_PROMPT = """You are a reasoning assistant working with information from a knowledge graph.
+REASONING_STEP_PROMPT = """
+**User query**: {query}
+
+------------------------------------------------------------------------------------------------
+
+**Graph evidence**: {context_text}
+
+------------------------------------------------------------------------------------------------
+
+**TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
 Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
@@ -76,17 +90,19 @@ Follow this process for each query:
   <label> unable </label>  
   <query> proposed follow-up question here. </query>
 
-Do not include any text outside the specified tags. Maintain strict adherence to the format.
-
----
-
-User query: {query}
-
-Graph evidence: 
-{context_text}"""
+Do not include any text outside the specified tags. Maintain strict adherence to the format."""
 
 # 强制作答提示模板 - 从HaoQuery._force_answer中提取
-FORCE_ANSWER_PROMPT = """You are a reasoning assistant working with information from a knowledge graph.
+FORCE_ANSWER_PROMPT = """
+**User query**: {query}
+
+------------------------------------------------------------------------------------------------
+
+**Graph evidence**: {context_text}
+
+------------------------------------------------------------------------------------------------
+
+**TASK**：You are a reasoning assistant working with information from a knowledge graph.
 
 Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
@@ -99,13 +115,7 @@ Follow this process for each query:
   <think> reasoning process here. </think>  
   <answer> final answer here. </answer>
 
----
-
-User query:  
-{query}
-
-Graph evidence:  
-{context_text}"""
+Do not include any text outside the specified tags. Maintain strict adherence to the format."""
 
 
 # 实体关系抽取提示模板 - 参考KG_AGNET一步法

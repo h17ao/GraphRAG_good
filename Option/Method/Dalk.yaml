@@ -39,7 +39,7 @@ retriever:
     enable_local: False
     use_entity_similarity_for_ppr: False
     node_specificity: False
-    top_k: 10
+    top_k: 5
 
 query: 
     query_type: qa
