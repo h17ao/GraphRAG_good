@@ -176,6 +176,10 @@ class GRQuery(BaseQuery):
 
 
     async def _retrieve_relevant_contexts(self, query: str):
+        # 确保已经初始化，如果没有初始化则先初始化
+        if not hasattr(self, 'nodes') or not hasattr(self, 'edges'):
+            await self.initialization()
+            
         query = f"Question: {query}\nAnswer: "
         desc = await self.retrieval_via_pcst(
             query=query,

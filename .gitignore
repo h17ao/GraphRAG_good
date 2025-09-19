@@ -9,6 +9,7 @@ sft_data/
 hotpotqa_1/
 musique/
 hotpotqa/
+hotpotqa_backup/
 hotpotqa_all/
 RL_data_generate/label_generate/*.json
 RL_data_generate/query_generate/*.json

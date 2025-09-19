@@ -8,10 +8,10 @@ import sys
 import os
 
 # 模型配置
-MODEL_PATH = "/home/yh/cache/models/modelscope/hub/models/qwen/trained_qwen1.7b_step_200"
-# MODEL_PATH = "../GraphRAG-RL-verl/tmp_epoch3"  # 第3个epoch训练好的模型路径
+# MODEL_PATH = "/home/yh/cache/models/modelscope/hub/models/qwen/trained_qwen1.7b_step_200"
+MODEL_PATH = "/home/yh/cache/models/modelscope/hub/models/qwen/Qwen3-4B"  # 第3个epoch训练好的模型路径
 HOST = "0.0.0.0"
-PORT = 8000
+PORT = 8001
 
 # ========== RTX 4090四卡分布式配置（张量并行）==========
 GPU_MEMORY_UTILIZATION = 0.85  # 4090 24GB显存利用率 (70%，适应其他进程占用)
@@ -24,7 +24,7 @@ BLOCK_SIZE = 16                 # vLLM要求：块大小必须是16的倍数
 # 注意：不使用量化参数，避免影响实验结果精度
 
 # 设置使用的GPU设备 (使用四张4090: GPU 0,1,2,3)
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 # 自动检测多卡
 cuda_visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES", "")
@@ -64,7 +64,7 @@ cmd = [
     "--max-num-seqs", str(MAX_NUM_SEQS),
     "--max-num-batched-tokens", str(MAX_NUM_BATCHED_TOKENS),
     "--trust-remote-code",
-    "--served-model-name", "trained_qwen3-1.7b",
+    "--served-model-name", "qwen3-4b",
     "--block-size", str(BLOCK_SIZE),         # 显存块大小优化
     "--disable-custom-all-reduce",           # 单卡优化
     "--max-seq-len-to-capture", str(MAX_MODEL_LEN),  # 序列捕获优化
