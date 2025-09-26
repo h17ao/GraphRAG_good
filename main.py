@@ -107,7 +107,7 @@ async def wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50):
         save_path = save_results(all_res, result_dir)
         print(f"💾 第 {batch_start//max_concurrent + 1} 批完成，已保存 {len(all_res)} 个结果")
     
-    print(f"✅ 全部处理完成！共处理 {len(remaining_queries)} 个查询，结果已保存到: {save_path}")
+    print(f"全部处理完成！共处理 {len(remaining_queries)} 个查询，结果已保存到: {save_path}")
     return save_path
 
 
@@ -129,8 +129,8 @@ async def wrapper_evaluation(path, opt, result_dir):
     
     # 获取标准评估生成的.score.json文件路径
     score_file = path.replace(".json", "_score.json")
-    print(f"✅ 标准评估完成，结果保存到: {score_file}")
-    print(f"✅ 评估指标保存到: {metrics_file}")
+    print(f"标准评估完成，结果保存到: {score_file}")
+    print(f"评估指标保存到: {metrics_file}")
     
     # 执行LLM评估
     print(f"🤖 执行LLM评估")
@@ -140,7 +140,7 @@ async def wrapper_evaluation(path, opt, result_dir):
     # LLM评估的结果文件路径（带时间戳）
     llm_eval_file = os.path.join(result_dir, f"llm_eval_results_{timestamp}.json")
     llm_summary_file = os.path.join(result_dir, f"llm_eval_summary_{timestamp}.json")
-    print(f"✅ LLM评估完成，结果文件已生成")
+    print(f"LLM评估完成，结果文件已生成")
 
 
 if __name__ == "__main__":
@@ -216,17 +216,17 @@ if __name__ == "__main__":
     start_idx, existing_results = load_existing_results(result_dir)
     
     if start_idx >= len(query_dataset):
-        print(f"✅ 所有 {len(query_dataset)} 条查询已完成")
-        print(f"⏭️  跳过检索阶段，直接进入评估")
+        print(f"所有 {len(query_dataset)} 条查询已完成")
+        print(f"跳过检索阶段，直接进入评估")
         save_path = results_file
     else:
-        print(f"🚀 开始检索阶段：从第 {start_idx + 1} 条继续（共 {len(query_dataset)} 条）")
+        print(f"开始检索阶段：从第 {start_idx + 1} 条继续（共 {len(query_dataset)} 条）")
         save_path = asyncio.run(wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50))
 
     # 执行评估
-    print(f"📊 开始评估阶段")
+    print(f"开始评估阶段")
     asyncio.run(wrapper_evaluation(save_path, opt, result_dir))
-    print("✅ 标准评估和LLM评估均已完成")
+    print("标准评估和LLM评估均已完成")
 
     # for train_item in dataloader:
 
