@@ -51,5 +51,5 @@ query:
     entities_max_tokens: 2000
     relationships_max_tokens: 2000
 # For HaoQuery
-    max_iterations: 5  # 最大迭代次数
+    max_iterations: 10  # 最大迭代次数
     retrieval_method: dalk  # 检索方法选择: ppr, basic, kgp, tog, gr, med, dalk

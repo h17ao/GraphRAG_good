@@ -57,5 +57,5 @@ query:
     topk_e: 2
     cost_e: 0.5
 # For HaoQuery
-    max_iterations: 5  # 最大迭代次数
+    max_iterations: 10  # 最大迭代次数
     retrieval_method: gr  # 检索方法选择: ppr, basic, kgp, tog, gr, med, dalk

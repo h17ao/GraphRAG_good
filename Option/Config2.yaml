@@ -14,8 +14,8 @@ llm:
 # 检索专用LLM配置 
 retrieval_llm:  
   api_type: "open_llm" # 使用本地vllm
-  base_url: "xx"
-  model: "xx"
+  base_url: "http://localhost:8000/v1"
+  model: "qwen3-0.6b"
   max_token: 6144
   MAX_MODEL_LEN: 32768
   temperature: 0.6
@@ -23,7 +23,7 @@ retrieval_llm:
 
   # api_type: "openai" # or open_llm
   # base_url: 'https://api2.aigcbest.top/v1'
-  # model: "qwen3-1.7b"
+  # model: "qwen3-8b"
   # api_key: "sk-TnVKM2Xl8y2nVFglJlXDDbNnfE7b5CxOYtPCnkVM5Q8PEk1u"
   # max_token: 6144
   # MAX_MODEL_LEN: 32768

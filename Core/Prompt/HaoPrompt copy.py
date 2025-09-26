@@ -14,12 +14,12 @@ REASONING_STEP_PROMPT_QWEN = """
 
 **TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
-Your task is to answer the user query only with the provided graph evidence.
+Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
 
 1. Carefully read the user query and the retrieved graph evidence.
 2. Think step-by-step about what the query is asking and what the evidence supports.
-3. Use only the graph evidence to reason through the query, and do not use your own knowledge.
+3. Use both the graph evidence and your own knowledge to reason through the query.
 
 - If the evidence **is sufficient**, respond in the following format:
   <label> able </label>  
@@ -46,12 +46,12 @@ FORCE_ANSWER_PROMPT_QWEN = """
 
 **TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
-Your task is to answer the user query only with the provided graph evidence.
+Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
 
 1. Carefully read the user query and the retrieved graph evidence.
 2. Think step-by-step about what the query is asking and what the evidence supports.
-3. Use only the graph evidence to reason through the query, and do not use your own knowledge.
+3. Use both the graph evidence and your own knowledge to reason through the query.
 
 - then respond in the following format: 
   <answer> final answer here. </answer>
@@ -70,12 +70,12 @@ REASONING_STEP_PROMPT = """
 
 **TASK**: You are a reasoning assistant working with information from a knowledge graph.
 
-Your task is to answer the user query only with the provided graph evidence.
+Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
 
 1. Carefully read the user query and the retrieved graph evidence.
 2. Think step-by-step about what the query is asking and what the evidence supports.
-3. Use only the graph evidence to reason through the query, and do not use your own knowledge.
+3. Use both the graph evidence and your own knowledge to reason through the query.
 
 - If the evidence **is sufficient**, respond in the following format:  
   <think> reasoning process here. </think>  
@@ -104,12 +104,12 @@ FORCE_ANSWER_PROMPT = """
 
 **TASK**：You are a reasoning assistant working with information from a knowledge graph.
 
-Your task is to answer the user query only with the provided graph evidence.
+Your task is to answer the user query with the provided graph evidence and your own knowledge.
 Follow this process for each query:
 
 1. Carefully read the user query and the retrieved graph evidence.
 2. Think step-by-step about what the query is asking and what the evidence supports.
-3. Use only the graph evidence to reason through the query, and do not use your own knowledge.
+3. Use both the graph evidence and your own knowledge to reason through the query.
 
 - then respond in the following format: 
   <think> reasoning process here. </think>  
