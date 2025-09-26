@@ -8,7 +8,7 @@ llm:
   api_type: "openai" # or open_llm
   base_url: 'https://api2.aigcbest.top/v1'
   model: "deepseek-ai/DeepSeek-V3"
-  api_key: "sk-TnVKM2Xl8y2nVFglJlXDDbNnfE7b5CxOYtPCnkVM5Q8PEk1u"
+  api_key: "sk"
 
 
 # 检索专用LLM配置 
