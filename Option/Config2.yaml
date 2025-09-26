@@ -24,7 +24,7 @@ retrieval_llm:
   # api_type: "openai" # or open_llm
   # base_url: 'https://api2.aigcbest.top/v1'
   # model: "qwen3-8b"
-  # api_key: "sk-TnVKM2Xl8y2nVFglJlXDDbNnfE7b5CxOYtPCnkVM5Q8PEk1u"
+  # api_key: "sk"
   # max_token: 6144
   # MAX_MODEL_LEN: 32768
   # temperature: 0.6
@@ -36,7 +36,7 @@ eval_llm:
   api_type: "openai" # or open_llm
   base_url: 'https://api2.aigcbest.top/v1'
   model: "deepseek-ai/DeepSeek-V3"
-  api_key: "sk-TnVKM2Xl8y2nVFglJlXDDbNnfE7b5CxOYtPCnkVM5Q8PEk1u"
+  api_key: "sk"
   # max_token: 6144           # ✅ 最大生成长度 (传入API)
   # MAX_MODEL_LEN: 32768     # ✅ 模型最大上下文长度 (用于计算截断)
   # temperature: 0.6          # ✅ 采样温度 (传入API)
