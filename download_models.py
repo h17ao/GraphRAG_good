@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-GraphRAG模型下载脚本
-- 下载模型 (all-MiniLM-L6-v2, Qwen3-1.7B, DeepSeek-LLM-7B-Chat)
-"""
 
 from modelscope import snapshot_download
 import os
@@ -19,12 +15,12 @@ def download_model(model_id, local_dir, model_name):
         
         # 检查是否已存在
         if os.path.exists(local_dir) and len(os.listdir(local_dir)) > 5:
-            print(f"✅ 已存在，跳过")
+            print(f"已存在，跳过")
             return local_dir
         
         print("⬇️ 下载中...")
         cache_dir = snapshot_download(model_id=model_id, local_dir=local_dir, revision='master')
-        print(f"✅ 完成")
+        print(f"完成")
         return cache_dir
         
     except Exception as e:
@@ -32,8 +28,6 @@ def download_model(model_id, local_dir, model_name):
         return None
 
 def main():
-    """主函数"""
-    print("🚀 GraphRAG模型下载")
     
     # 模型配置
     models = [
@@ -48,17 +42,14 @@ def main():
     
     success_count = 0
     
-    # 下载模型
     for model_id, local_dir, name in models:
         if download_model(model_id, local_dir, name):
             success_count += 1
     
-    # 最终总结
     print(f"\n🎉 模型下载完成: {success_count}/{len(models)}")
     if success_count == len(models):
-        print("✅ 所有模型已准备就绪!")
+        print("所有模型已准备就绪!")
     else:
-        print("⚠️ 部分模型下载失败，请检查网络连接")
         sys.exit(1)
     
 if __name__ == "__main__":
