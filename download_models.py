@@ -8,7 +8,7 @@ import sys
 
 def download_model(model_id, local_dir, model_name):
     """下载模型"""
-    print(f"\n📥 {model_name}")
+    print(f"\n{model_name}")
     
     try:
         os.makedirs(local_dir, exist_ok=True)
@@ -18,13 +18,13 @@ def download_model(model_id, local_dir, model_name):
             print(f"已存在，跳过")
             return local_dir
         
-        print("⬇️ 下载中...")
+        print("下载中...")
         cache_dir = snapshot_download(model_id=model_id, local_dir=local_dir, revision='master')
         print(f"完成")
         return cache_dir
         
     except Exception as e:
-        print(f"❌ 失败: {str(e)}")
+        print(f"失败: {str(e)}")
         return None
 
 def main():
@@ -46,7 +46,7 @@ def main():
         if download_model(model_id, local_dir, name):
             success_count += 1
     
-    print(f"\n🎉 模型下载完成: {success_count}/{len(models)}")
+    print(f"\n模型下载完成: {success_count}/{len(models)}")
     if success_count == len(models):
         print("所有模型已准备就绪!")
     else:
