@@ -64,14 +64,14 @@ async def wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50):
         print("所有查询已完成！")
         return save_results(all_res, result_dir)
     
-    print(f"🚀 分批并发处理 {len(remaining_queries)} 个查询，每批{max_concurrent}个")
+    print(f"分批并发处理 {len(remaining_queries)} 个查询，每批{max_concurrent}个")
     
     # 分批处理
     for batch_start in range(0, len(remaining_queries), max_concurrent):
         batch_end = min(batch_start + max_concurrent, len(remaining_queries))
         batch_queries = remaining_queries[batch_start:batch_end]
         
-        print(f"📦 处理第 {batch_start//max_concurrent + 1} 批: {batch_start + start_idx + 1} - {batch_end + start_idx}")
+        print(f"处理第 {batch_start//max_concurrent + 1} 批: {batch_start + start_idx + 1} - {batch_end + start_idx}")
         
         # 每批内部并发处理
         semaphore = asyncio.Semaphore(max_concurrent)
@@ -93,7 +93,7 @@ async def wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50):
                 if "output_all" in result:
                     query_item["output_all"] = result["output_all"]
                 
-                print(f"✅ {original_idx + 1}/{dataset_len}: 完成")
+                print(f"{original_idx + 1}/{dataset_len}: 完成")
                 return query_item
         
         # 执行当前批次的并发查询
@@ -105,7 +105,7 @@ async def wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50):
         
         # 保存当前进度
         save_path = save_results(all_res, result_dir)
-        print(f"💾 第 {batch_start//max_concurrent + 1} 批完成，已保存 {len(all_res)} 个结果")
+        print(f"第 {batch_start//max_concurrent + 1} 批完成，已保存 {len(all_res)} 个结果")
     
     print(f"全部处理完成！共处理 {len(remaining_queries)} 个查询，结果已保存到: {save_path}")
     return save_path
@@ -133,7 +133,7 @@ async def wrapper_evaluation(path, opt, result_dir):
     print(f"评估指标保存到: {metrics_file}")
     
     # 执行LLM评估
-    print(f"🤖 执行LLM评估")
+    print(f"执行LLM评估")
     # 使用Config中的eval_llm配置进行LLM评估
     await wrapper_llm_evaluation(path, config=opt)
     
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         opt_path = Path(args.opt)
         if opt_path.parent.name == "Method":  # 确保是Method目录下的配置文件
             method_name = opt_path.stem  # 去掉扩展名的文件名
-            print(f"🔍 自动从配置文件路径提取方法名: {method_name}")
+            print(f"自动从配置文件路径提取方法名: {method_name}")
 
     # 如果有exp_name参数，先临时修改环境变量，让Config.parse使用正确的exp_name
     original_exp_name = None
@@ -173,7 +173,7 @@ if __name__ == "__main__":
         import os
         original_exp_name = os.environ.get("EXP_NAME")
         os.environ["EXP_NAME"] = args.exp_name
-        print(f"🔧 临时设置实验名称为: {args.exp_name}")
+        print(f"临时设置实验名称为: {args.exp_name}")
 
     opt = Config.parse(Path(args.opt), dataset_name=args.dataset_name, method_name=method_name)
     
@@ -190,14 +190,14 @@ if __name__ == "__main__":
             raise ValueError("配置中未找到 retrieval_llm，请在 Option/Config2.yaml 中设置后再使用 --retrieval_model 覆盖")
         # 覆盖模型名
         opt.retrieval_llm.model = args.retrieval_model
-        print(f"🔧 覆盖检索模型为: {opt.retrieval_llm.model}")
+        print(f"覆盖检索模型为: {opt.retrieval_llm.model}")
 
     # 覆盖检索模型的 base_url（可选）
     if getattr(args, "retrieval_base_url", None):
         if not hasattr(opt, "retrieval_llm") or opt.retrieval_llm is None:
             raise ValueError("配置中未找到 retrieval_llm，请在 Option/Config2.yaml 中设置后再使用 --retrieval_base_url 覆盖")
         opt.retrieval_llm.base_url = args.retrieval_base_url
-        print(f"🔧 覆盖检索 base_url 为: {opt.retrieval_llm.base_url}")
+        print(f"覆盖检索 base_url 为: {opt.retrieval_llm.base_url}")
 
     # exp_name 已在 Config.parse() 阶段通过环境变量处理
     digimon = GraphRAG(config=opt)
