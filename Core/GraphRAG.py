@@ -290,7 +290,7 @@ class GraphRAG(ContextMixin, BaseModel):
         
         # Step 1.  Chunking Stage
         self.time_manager.start_stage()
-        await self.doc_chunk.build_chunks(docs, force=self.config.graph.force)  # haloyang 根据force控制是否重新chunk
+        await self.doc_chunk.build_chunks(docs, force=self.config.graph.force)  #   根据force控制是否重新chunk
         self._update_costs_info("Chunking")
         
         

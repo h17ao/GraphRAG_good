@@ -18,7 +18,7 @@ class NetworkXStorage(BaseGraphStorage):
         super().__init__()
         self.edge_list = None
         self.node_list = None
-        # haloyang 添加索引字典，避免线性搜索
+        #   添加索引字典，避免线性搜索
         self._edge_index_dict = None
         self._node_index_dict = None
 
@@ -139,9 +139,9 @@ class NetworkXStorage(BaseGraphStorage):
     async def get_edge(
             self, source_node_id: str, target_node_id: str
     ) -> Union[dict, None]:
-        return dict(self._graph.edges.get((source_node_id, target_node_id), {}))  # haloyang 完善获取content代码
+        return dict(self._graph.edges.get((source_node_id, target_node_id), {}))  #   完善获取content代码
 
-    # haloyang 完善获取content代码
+    #   完善获取content代码
     async def get_edge_with_content(
         self, source_node_id: str, target_node_id: str
     ) -> Union[dict, None]:
@@ -372,10 +372,10 @@ class NetworkXStorage(BaseGraphStorage):
     def get_edge_index(self, src_id, tgt_id):
         if self.edge_list is None:
             self.edge_list = list(self._graph.edges())
-            # haloyang 构建边索引字典，O(E)时间复杂度
+            #   构建边索引字典，O(E)时间复杂度
             self._edge_index_dict = {edge: idx for idx, edge in enumerate(self.edge_list)}
         
-        # haloyang 使用字典查找，O(1)时间复杂度
+        #   使用字典查找，O(1)时间复杂度
         edge_key = (src_id, tgt_id)
         if edge_key in self._edge_index_dict:
             return self._edge_index_dict[edge_key]
@@ -388,10 +388,10 @@ class NetworkXStorage(BaseGraphStorage):
     async def get_node_index(self, node_id):
         if self.node_list is None:
             self.node_list = list(self._graph.nodes())
-            # haloyang 构建节点索引字典，O(V)时间复杂度
+            #   构建节点索引字典，O(V)时间复杂度
             self._node_index_dict = {node: idx for idx, node in enumerate(self.node_list)}
         
-        # haloyang 使用字典查找，O(1)时间复杂度
+        #   使用字典查找，O(1)时间复杂度
         if node_id in self._node_index_dict:
             return self._node_index_dict[node_id]
         else:
@@ -464,7 +464,7 @@ class NetworkXStorage(BaseGraphStorage):
         path = []
         cur = end
         while cur != start:
-            path.append(await self.get_edge_with_content(pred[cur][0], cur)) # haloyang 完善获取content代码
+            path.append(await self.get_edge_with_content(pred[cur][0], cur)) #   完善获取content代码
             cur = pred[cur][0]
         # import pdb
         # pdb.set_trace()
@@ -499,8 +499,8 @@ class NetworkXStorage(BaseGraphStorage):
         neighbor_list = []
         neighbor_list_cand = []
         for u in start_nodes:
-            neis = [(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(u)] # haloyang 完善获取content代码
-            neighbor_list.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(u)]) # haloyang 完善获取content代码
+            neis = [(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(u)] #   完善获取content代码
+            neighbor_list.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(u)]) #   完善获取content代码
 
             while neis != []:
                 inter = list(set(neis) & set(start_nodes))
@@ -508,12 +508,12 @@ class NetworkXStorage(BaseGraphStorage):
 
                 if len(inter) != 0:
                     for v in inter:
-                        new_neis.extend([(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(v)]) # haloyang 完善获取content代码
-                        neighbor_list_cand.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(v)]) # haloyang 完善获取content代码
+                        new_neis.extend([(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(v)]) #   完善获取content代码
+                        neighbor_list_cand.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(v)]) #   完善获取content代码
                 else:
                     for v in neis:
-                        new_neis.extend([(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(v)]) # haloyang 完善获取content代码
-                        neighbor_list_cand.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(v)]) # haloyang 完善获取content代码
+                        new_neis.extend([(await self.get_edge_with_content(e[0], e[1]))["tgt_id"] for e in await self.get_node_edges(v)]) #   完善获取content代码
+                        neighbor_list_cand.extend([(await self.get_edge_with_content(e[0], e[1])) for e in await self.get_node_edges(v)]) #   完善获取content代码
                 if len(neighbor_list_cand) > 10:
                     break
                 neis = new_neis

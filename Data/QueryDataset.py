@@ -11,7 +11,7 @@ class RAGQueryDataset(Dataset):
         self.qa_path = os.path.join(data_dir, "Question.json")
         self.dataset = self._read_json_file(self.qa_path)
 
-    # haloyang 支持读取json和jsonl文件
+    #   支持读取json和jsonl文件
     def _read_json_file(self, file_path):
         """智能读取JSON文件，支持标准JSON数组格式和JSONL格式"""
         try:
@@ -38,7 +38,7 @@ class RAGQueryDataset(Dataset):
         corpus = self._read_json_file(self.corpus_path)
         corpus_list = []
         
-        # haloyang 智能检测内容字段名（可能是"text"或"context"）
+        #   智能检测内容字段名（可能是"text"或"context"）
         content_field = "text" if "text" in corpus.columns else "context"
         
         for i in range(len(corpus)):
@@ -54,7 +54,7 @@ class RAGQueryDataset(Dataset):
     def __len__(self):
         return len(self.dataset)
 
-    # haloyang 添加并发查询处理(50并发)
+    #   添加并发查询处理(50并发)
     def __getitem__(self, idx):
         # 处理切片操作
         if isinstance(idx, slice):

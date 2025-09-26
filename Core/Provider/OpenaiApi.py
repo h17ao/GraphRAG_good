@@ -50,14 +50,14 @@ class OpenAILLM(BaseLLM):
         self._init_client()
         self.auto_max_tokens = False
         self.cost_manager: Optional[CostManager] = None
-        self._semaphore = None  # haloyang 修改semaphore，在每个新的事件循环中动态重新创建
-        self._semaphore_loop = None  # haloyang 修改semaphore，在每个新的事件循环中动态重新创建
+        self._semaphore = None  #   修改semaphore，在每个新的事件循环中动态重新创建
+        self._semaphore_loop = None  #   修改semaphore，在每个新的事件循环中动态重新创建
         
         # 初始化tokenizer（保留用于其他功能）
         self.encoder = tiktoken.encoding_for_model("gpt-3.5-turbo")  # 使用通用tokenizer，与模型差异<3%
 
 
-    # haloyang 修改semaphore，在每个新的事件循环中动态重新创建
+    #   修改semaphore，在每个新的事件循环中动态重新创建
     @property
     def semaphore(self):
         """Get or create semaphore for current event loop"""

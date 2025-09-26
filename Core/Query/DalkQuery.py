@@ -57,7 +57,7 @@ class DalkQuery(BaseQuery):
         # import pdb
         # pdb.set_trace()
         path_str = [(path[0]["src_id"]
-                     + ("->" + edge["content"] + "-> " + edge["tgt_id"]) for edge in path) # haloyang 完善获取content代码
+                     + ("->" + edge["content"] + "-> " + edge["tgt_id"]) for edge in path) #   完善获取content代码
                      for path in path_list]
         context = DALK_RERANK_PROMPT.format(graph=path_str, question=query)
 

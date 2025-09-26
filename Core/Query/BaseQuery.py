@@ -31,7 +31,7 @@ class BaseQuery(ABC):
     async def _retrieve_relevant_contexts(self, **kwargs):
         pass
 
-    # haloyang 修改为同时保存context且实时读写保存    
+    #   修改为同时保存context且实时读写保存    
     async def query(self, query):
         context = await self._retrieve_relevant_contexts(query=query)
         response = None
@@ -130,7 +130,7 @@ class BaseQuery(ABC):
                         i,
                         c["report_string"],
                         c["report_json"].get("rating", 0),
-                        c['occurrence'], # haloyang 删去['community_info']['occurrence']，纠正了错误的字段访问路径
+                        c['occurrence'], #   删去['community_info']['occurrence']，纠正了错误的字段访问路径
                     ]
                 )
             community_context = list_to_quoted_csv_string(communities_section_list)

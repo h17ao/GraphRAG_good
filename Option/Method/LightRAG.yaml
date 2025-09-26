@@ -11,7 +11,7 @@ enable_graph_augmentation: False
 
 index_name: rkg_graph
 
-# haloyang 从vector修改为faiss
+#   从vector修改为faiss
 vdb_type: faiss  # vector/colbert
 
 # Chunk Config 

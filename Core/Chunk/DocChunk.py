@@ -23,7 +23,7 @@ class DocChunk:
     def namespace(self, namespace):
         self.namespace = namespace
         
-    #  haloyang 根据force控制是否重新chunk
+    #    根据force控制是否重新chunk
     async def build_chunks(self, docs: Union[str, List[str]], force=False):
         logger.info("Starting chunk the given documents")
   

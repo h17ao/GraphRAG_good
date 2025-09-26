@@ -39,4 +39,4 @@ class ColBertIndexConfig(BaseIndexConfig):
 
 class FAISSIndexConfig(VectorIndexConfig):
     """Config for faiss-based index."""
-    dimensions: int = Field(default=384, description="Dimension of the embedding vectors.")  # haloyang 将配置中的dimensions信息正确传递到FAISS索引 
+    dimensions: int = Field(default=384, description="Dimension of the embedding vectors.")  #   将配置中的dimensions信息正确传递到FAISS索引 

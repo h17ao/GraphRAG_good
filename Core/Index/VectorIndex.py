@@ -21,9 +21,9 @@ class VectorIndex(BaseIndex):
 
     def __init__(self, config):
         super().__init__(config)
-        self.embedding_model = config.embed_model  # haloyang 手动计算embedding
+        self.embedding_model = config.embed_model  #   手动计算embedding
     
-    # haloyang 手动计算embedding
+    #   手动计算embedding
     def _embed_text(self, text: str):
         return self.embedding_model._get_text_embedding(text)
 
@@ -31,8 +31,8 @@ class VectorIndex(BaseIndex):
         if top_k is None:
             top_k = self._get_retrieve_top_k()
         retriever = self._index.as_retriever(similarity_top_k=top_k, embed_model=self.config.embed_model)
-        query_emb = self._embed_text(query)  # haloyang 手动计算embedding
-        query_bundle = QueryBundle(query_str=query, embedding=query_emb)  # haloyang 手动计算embedding
+        query_emb = self._embed_text(query)  #   手动计算embedding
+        query_bundle = QueryBundle(query_str=query, embedding=query_emb)  #   手动计算embedding
 
         return await retriever.aretrieve(query_bundle)
 

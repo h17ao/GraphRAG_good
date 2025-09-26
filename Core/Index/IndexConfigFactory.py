@@ -33,7 +33,7 @@ class IndexConfigFactory:
         return FAISSIndexConfig(
             persist_path=persist_path,
             embed_model=get_rag_embedding(config.embedding.api_type, config),
-            dimensions=config.embedding.dimensions or 384  # haloyang 将配置中的dimensions信息正确传递到FAISS索引 
+            dimensions=config.embedding.dimensions or 384  #   将配置中的dimensions信息正确传递到FAISS索引 
         )
 
     @staticmethod

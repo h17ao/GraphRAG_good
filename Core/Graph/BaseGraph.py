@@ -172,7 +172,7 @@ class BaseGraph(ABC):
         """
         pass
 
-    # haloyang 相似边是否存在，以判断是否跳过图增强
+    #   相似边是否存在，以判断是否跳过图增强
     async def augment_graph_by_similarity_search(self, entity_vdb, duplicate=False):
         
         logger.info("Checking if similarity edges already exist...")
@@ -234,7 +234,7 @@ class BaseGraph(ABC):
         logger.info(f"Augmenting graph with {len(maybe_edges_aug)} edges")
      
         await asyncio.gather(*[self._merge_edges_then_upsert(k[0], k[1], v) for k, v in maybe_edges.items()])
-        await self._persist_graph(force=True)  # haloyang 若新建，强制保存图增强后的结果
+        await self._persist_graph(force=True)  #   若新建，强制保存图增强后的结果
         logger.info("✅ Finished augment the existing graph with similariy edges")
 
 

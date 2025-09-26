@@ -29,7 +29,7 @@ def check_dirs(opt):
     copyfile(basic_name, os.path.join(config_dir, "Config2.yaml"))
     return result_dir
 
-# haloyang 修改为同时保存context且实时读写保存
+#   修改为同时保存context且实时读写保存
 def load_existing_results(result_dir):
     """断点续传：加载已有结果"""
     save_path = os.path.join(result_dir, "results.json")
@@ -43,7 +43,7 @@ def load_existing_results(result_dir):
             print("从头开始...")
     return 0, []
 
-# haloyang 修改为同时保存context且实时读写保存
+#   修改为同时保存context且实时读写保存
 def save_results(all_res, result_dir):
     """保存结果到文件"""
     save_path = os.path.join(result_dir, "results.json")
@@ -51,8 +51,8 @@ def save_results(all_res, result_dir):
     df.to_json(save_path, orient="records", lines=True)
     return save_path
 
-# haloyang 修改为同时保存context且实时读写保存
-# haloyang 添加并发查询处理(50并发)
+#   修改为同时保存context且实时读写保存
+#   添加并发查询处理(50并发)
 async def wrapper_query(query_dataset, digimon, result_dir, max_concurrent=50):
     """分批并发处理query，确保每批全部完成再进行下一批"""
     dataset_len = len(query_dataset)

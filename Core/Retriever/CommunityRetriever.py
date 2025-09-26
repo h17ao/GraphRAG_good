@@ -93,7 +93,7 @@ class CommunityRetriever(BaseRetriever):
         ]
         community_datas = sorted(
             community_datas,
-            key=lambda x: (x['occurrence'], x["report_json"].get("rating", 0)), # haloyang 删去['community_info']['occurrence']，纠正了错误的字段访问路径
+            key=lambda x: (x['occurrence'], x["report_json"].get("rating", 0)), #   删去['community_info']['occurrence']，纠正了错误的字段访问路径
             reverse=True,
         )
         logger.info(f"Retrieved {len(community_datas)} communities")

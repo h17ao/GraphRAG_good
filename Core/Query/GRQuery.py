@@ -103,7 +103,7 @@ class GRQuery(BaseQuery):
                                                                 need_score=True, need_context=False)
             e_prizes = torch.zeros(len(self.edges))
             
-            if retrieve_relations and topk_e_values:  # haloyang 如果没有检索到任何关系，跳过处理
+            if retrieve_relations and topk_e_values:  #   如果没有检索到任何关系，跳过处理
                 for i, rel in enumerate(retrieve_relations):
                     index = self.edges[
                         (self.edges['src'] == retrieve_relations[i]["src_id"]) &
@@ -112,7 +112,7 @@ class GRQuery(BaseQuery):
                     ].index
                     e_prizes[index] = topk_e_values[i]
 
-                actual_topk_e = min(topk_e, len(topk_e_values))   # haloyang 确保循环次数不超过实际数据长度
+                actual_topk_e = min(topk_e, len(topk_e_values))   #   确保循环次数不超过实际数据长度
                 last_topk_e_value = topk_e
                 for k in range(actual_topk_e):
                     indices = e_prizes == topk_e_values[k]
