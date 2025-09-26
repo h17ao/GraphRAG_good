@@ -1,4 +1,4 @@
-The code is base on an open-source libaraty DGGIMON
+The code is base on an open-source libaraty DIGIMON
 
 bash run_iter_1.7B.sh to experience Phi-agent
 
